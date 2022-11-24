@@ -51,4 +51,12 @@ When constructing your model, also consider the following:
 * Use the `summary()` function to examine the fit model.  
 * Use the data points selected earlier to compute and analyze the neural network's predictions using the `lime()` function from the lime package.  
      * Visualize the results of this analysis.  
-* In this course project document, analyze the model and summarize your findings. How well does your model predict house price? Do you think it will generalize well to new data? Which variables ended up being most important? What could be done to improve the model?
+* In this course project document, analyze the model and summarize your findings. How well does your model predict house price? Do you think it will generalize well to new data? Which variables ended up being most important? What could be done to improve the model?  
+
+1. How well did your model predict the house prices?  
+
+2. Do you think your model will generalize well to new data? Why or why not?  
+
+3. Which variables ended up being the most important and why do you think this is so?  
+
+4. What could you do to improve the model?
