@@ -59,4 +59,6 @@ When constructing your model, also consider the following:
 
 3. Which variables ended up being the most important and why do you think this is so?  
 
-4. What could you do to improve the model?
+4. What could you do to improve the model?  
+
+5. In the space below, describe your neural network structure (i.e., which independent variables did you use?). How many hidden layers were in the network? How many nodes were in each hidden layer? Which activation function did you use? Did you use an adaptive learning rate? How many epochs did the training algorithm run for?  
