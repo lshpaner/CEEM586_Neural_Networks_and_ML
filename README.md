@@ -30,7 +30,12 @@ Testing Dimensions Percentage: 0.3
 
 <img src = "https://github.com/lshpaner/CEEM586_Neural_Networks_and_ML/blob/main/code/figs/unnamed-chunk-5-1.png">
 
+**The mean absolute error between true and fitted values was 0.1349895 fraction of votes, so it was a fairly small error, thereby rendering the model predictions sound and proper.**
+
+<img src = "https://github.com/lshpaner/CEEM586_Neural_Networks_and_ML/blob/main/code/figs/unnamed-chunk-13-1.png">
+
 2. Do you think your model will generalize well to new data? Why or why not?  
+
 
 3. What could you do to improve the model?  
 
