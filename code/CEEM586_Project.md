@@ -1,8 +1,9 @@
-Neural Networks and Machine Learning Course Project
-================
-Leonid Shpaner
-2022-11-19
-
+---
+title: Neural Networks and Machine Learning Course Project
+subtitle: Cornell University - CEEM586
+author: Leonid Shpaner
+date: 2022-11-19
+---
 # Part One
 
 ## Load the requisite libraries
