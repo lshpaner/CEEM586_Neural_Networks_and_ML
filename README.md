@@ -19,27 +19,25 @@ This part of the project requires some work in RStudio, located on the project p
 
 1. How well did your model predict the election results?  
 
-**There were five highly correlated predictors above a threshold of *r* = 0.75 which are omitted from
-the model. They were as follows: "Percent.White.Not.Hispanic", "Percent.foreign.born",
-"PercentLangDiffEnglish", "PercentWhite", and "Bachlorsorhigher."**
-
-Training Dimensions: 2186 27  
-Testing Dimensions: 957 27  
-Training Dimensions Percentage: 0.7  
-Testing Dimensions Percentage: 0.3  
-
-<img src = "https://github.com/lshpaner/CEEM586_Neural_Networks_and_ML/blob/main/code/figs/unnamed-chunk-5-1.png">
-
-**The mean absolute error between true and fitted values was 0.1349895 fraction of votes, so it was a fairly small error, thereby rendering the model predictions sound and proper.**
-
-<img src = "https://github.com/lshpaner/CEEM586_Neural_Networks_and_ML/blob/main/code/figs/unnamed-chunk-13-1.png">
+**The mean absolute error between true and fitted values was 0.1349895 fraction of votes, so it was a fairly small error, thereby rendering the model predictions sound and proper. Prior to calling on the neural network, a generalized linear model is fitted with the training data. The following output is obtained. All features are statistically significant at an  $\alpha$ = 0.05 significance level. The mean absolute error between true and fitted values was 0.1349895 fraction of votes, so it was a fairly small error, thereby rendering the model predictions sound and proper.**
 
 2. Do you think your model will generalize well to new data? Why or why not?  
 
+**The model should generalize well to new data because the mean absolute error on the out-of-sample (test) data is 0.1285449 (in close proximity to that of the training MAE (0.1362437)). There is a negligible difference between the two of 0.007698762.**
 
 3. What could you do to improve the model?  
 
-4. In the space below, describe your neural network structure (i.e., how many hidden layers were in the network?). How many nodes are in each hidden layer? Which activation function 
+**Apart from eliminating the highly correlated predictors, various additional feature reduction techniques like PCA (Principal Component Analysis) can be applied. Furthermore, the number of hidden layers and nodes can be changed and the model hyperparameters tuned.**
+
+4. In the space below, describe your neural network structure (i.e., how many hidden layers were in the network?). How many nodes are in each hidden layer? Which activation function did you use? Which independent variables did you include?  
+
+**The neural network structure includes 2 hidden layers with 5 and 3 nodes, respectively:**
+<br>
+<!-- HTML generated using hilite.me --><div style="background: #ffffff; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><pre style="margin: 0; line-height: 125%">nn_train <span style="color: #333333">&lt;-</span> neuralnet(f_train, data<span style="color: #333333">=</span>trainingdata, hidden<span style="color: #333333">=</span>c(<span style="color: #0000DD; font-weight: bold">5</span>,<span style="color: #0000DD; font-weight: bold">3</span>), linear.output<span style="color: #333333">=</span>T)
+</pre></div>
+</br>
+
+<img src ="https://github.com/lshpaner/CEEM586_Neural_Networks_and_ML/blob/main/code/figs/unnamed-chunk-13-1.png">
 
 ## Part Two
 
