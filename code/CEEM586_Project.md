@@ -441,7 +441,8 @@ plot(nn_train, rep = "best") # plot the neural network - training data
 ```
 
 <img src="figs/unnamed-chunk-12-1.png" style="display: block; margin: auto;" />
-\### Predict on Training Data and Test Data
+
+## Predict on Training Data and Test Data
 
 ``` r
 set.seed(222) 
