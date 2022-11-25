@@ -66,6 +66,16 @@ When constructing your model, also consider the following:
 * In this course project document, analyze the model and summarize your findings. How well does your model predict house price? Do you think it will generalize well to new data? Which variables ended up being most important? What could be done to improve the model?  
 
 1. How well did your model predict the house prices?  
+**The model is re-trained with the top 20 features over the same hyperparameters as the original model. There exists a narrower gap between the training and validation MAE scores over roughly the first twenty epochs. However, the gap progressively widens.**  
+
+<img src = "https://github.com/lshpaner/CEEM586_Neural_Networks_and_ML/blob/main/code/figs/unnamed-chunk-33-1.png">
+
+**LIME Analysis** 
+
+**Using only the top 20 input features and the LIME package library, a substantial amount of variation is explained by the data according to the  values - the highest of which is 0.71, but starts off as 0.68, and then increases, but decreases in a step-wise pattern to .65, until it gradually drops off and reaches 0.43, a moderate amount of variation.**  
+
+<imng src = "https://github.com/lshpaner/CEEM586_Neural_Networks_and_ML/blob/main/code/figs/unnamed-chunk-45-1.png">
+
 
 2. Do you think your model will generalize well to new data? Why or why not?  
 
