@@ -18,15 +18,16 @@ In this part of the project, you will project data for neural networks using the
 This part of the project requires some work in RStudio, located on the project page in Canvas. Use that space, along with the provided script and data file, to perform the work, then use this document to answer questions on what you discover.
 
 1. How well did your model predict the election results?  
-<font color="blue"> There were five highly correlated predictors above a threshold of *r* = 0.75 which are omitted from
+There were five highly correlated predictors above a threshold of *r* = 0.75 which are omitted from
 the model. They were as follows: "Percent.White.Not.Hispanic", "Percent.foreign.born",
-"PercentLangDiffEnglish", "PercentWhite", and "Bachlorsorhigher." </font>
+"PercentLangDiffEnglish", "PercentWhite", and "Bachlorsorhigher."
 
 Training Dimensions: 2186 27  
 Testing Dimensions: 957 27  
 Training Dimensions Percentage: 0.7  
 Testing Dimensions Percentage: 0.3  
 
+<img src = "https://github.com/lshpaner/CEEM586_Neural_Networks_and_ML/blob/main/code/figs/unnamed-chunk-5-1.png">
 
 2. Do you think your model will generalize well to new data? Why or why not?  
 
