@@ -18,9 +18,10 @@ In this part of the project, you will project data for neural networks using the
 This part of the project requires some work in RStudio, located on the project page in Canvas. Use that space, along with the provided script and data file, to perform the work, then use this document to answer questions on what you discover.
 
 1. How well did your model predict the election results?  
-There were five highly correlated predictors above a threshold of *r* = 0.75 which are omitted from
+
+**There were five highly correlated predictors above a threshold of *r* = 0.75 which are omitted from
 the model. They were as follows: "Percent.White.Not.Hispanic", "Percent.foreign.born",
-"PercentLangDiffEnglish", "PercentWhite", and "Bachlorsorhigher."
+"PercentLangDiffEnglish", "PercentWhite", and "Bachlorsorhigher."**
 
 Training Dimensions: 2186 27  
 Testing Dimensions: 957 27  
