@@ -35,7 +35,6 @@ This part of the project requires some work in RStudio, located on the project p
 <br>
 <!-- HTML generated using hilite.me --><div style="background: #ffffff; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><pre style="margin: 0; line-height: 125%">nn_train <span style="color: #333333">&lt;-</span> neuralnet(f_train, data<span style="color: #333333">=</span>trainingdata, hidden<span style="color: #333333">=</span>c(<span style="color: #0000DD; font-weight: bold">5</span>,<span style="color: #0000DD; font-weight: bold">3</span>), linear.output<span style="color: #333333">=</span>T)
 </pre></div>
-</br>
 
 <img src ="https://github.com/lshpaner/CEEM586_Neural_Networks_and_ML/blob/main/code/figs/unnamed-chunk-13-1.png">
 
