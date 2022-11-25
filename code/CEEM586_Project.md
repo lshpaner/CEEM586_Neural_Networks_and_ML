@@ -1,6 +1,6 @@
 Neural Networks and Machine Learning Course Project
 ================
-Leonid Shpaner, 2022-11-19
+## Cornell University, Leonid Shpaner, 2022-11-19
 
 # Part One
 
