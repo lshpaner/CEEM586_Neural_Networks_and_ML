@@ -76,8 +76,6 @@ When constructing your model, also consider the following:
 
 <p align = "center"> <img src = "https://github.com/lshpaner/CEEM586_Neural_Networks_and_ML/blob/main/code/figs/unnamed-chunk-45-1.png"> </p>
 
-2. Do you think your model will generalize well to new data? Why or why not?  
-
 <center>
 
 <!-- HTML generated using hilite.me --><div style="background: #f8f8f8; overflow:auto;width:fit-content;border:border-width:.1em .1em .1em .8em;padding:.6em .6em;"><pre style="margin: 0; line-height: 125%"><span style="color: #000000">## # A tibble: 20 × 11</span>
@@ -110,8 +108,58 @@ When constructing your model, also consider the following:
 
 </center>
 
+**Moreover, the mean price prediction of $578,529.80 differs by only $19,528.26 from the actual mean housing price of $598,058.10. That is an almost negligible difference of approximately 3%, so the model predicted well.**
+
+**The ensuing plots show how five random features explain the model’s fit with a mean of 63%.**
+
+<p align="center">
+<img src = "https://github.com/lshpaner/CEEM586_Neural_Networks_and_ML/blob/main/code/figs/unnamed-chunk-42-1.png"> </p>
+
+<p align="center">
+<img src = "https://github.com/lshpaner/CEEM586_Neural_Networks_and_ML/blob/main/code/figs/unnamed-chunk-43-1.png"> </p>
+
+2. Do you think your model will generalize well to new data? Why or why not?  
+**The 613.31 difference in the mean absolute error between the train (80,587.15) and validation (81,200.46) sets is negligible. However, at each time step of the epoch progression, that difference becomes wider, and thus, will not generalize well to new data unless the epochs are limited.**
+
 3. Which variables ended up being the most important and why do you think this is so?  
+**Using the `var_imp()` function call, the following variables ended up being most important:**
+
+<p align="center">
+<img src ="https://github.com/lshpaner/CEEM586_Neural_Networks_and_ML/blob/main/code/figs/unnamed-chunk-28-1.png"> </p>
+
+<center>
+
+<!-- HTML generated using hilite.me --><div style="background: #f8f8f8; overflow:auto;width:fit-content;border:border-width:.1em .1em .1em .8em;padding:.6em .6em;"><pre style="margin: 0;text-align:left; line-height: 125%"><span style="color: #000000">## Variable Importances: </span>
+<span style="color: #000000">##           variable relative_importance scaled_importance percentage</span>
+<span style="color: #000000">## 1             Ward            1.000000          1.000000   0.162422</span>
+<span style="color: #000000">## 2              EYB            0.584610          0.584610   0.094954</span>
+<span style="color: #000000">## 3         OldCity1            0.581093          0.581093   0.094382</span>
+<span style="color: #000000">## 4        BATHROOMS            0.456646          0.456646   0.074170</span>
+<span style="color: #000000">## 5               NE            0.403440          0.403440   0.065528</span>
+<span style="color: #000000">## 6            Ward4            0.322812          0.322812   0.052432</span>
+<span style="color: #000000">## 7      CapitolHill            0.273834          0.273834   0.044477</span>
+<span style="color: #000000">## 8            Ward7            0.268182          0.268182   0.043559</span>
+<span style="color: #000000">## 9         LANDAREA            0.250221          0.250221   0.040641</span>
+<span style="color: #000000">## 10        OldCity2            0.237900          0.237900   0.038640</span>
+<span style="color: #000000">## 11 CongressHeights            0.221452          0.221452   0.035969</span>
+<span style="color: #000000">## 12       RowInside            0.216636          0.216636   0.035187</span>
+<span style="color: #000000">## 13        Deanwood            0.206530          0.206530   0.033545</span>
+<span style="color: #000000">## 14          RowEnd            0.198102          0.198102   0.032176</span>
+<span style="color: #000000">## 15      FIREPLACES            0.194298          0.194298   0.031558</span>
+<span style="color: #000000">## 16           Ward3            0.185223          0.185223   0.030084</span>
+<span style="color: #000000">## 17        YearSold            0.178580          0.178580   0.029005</span>
+<span style="color: #000000">## 18       RiggsPark            0.165993          0.165993   0.026961</span>
+<span style="color: #000000">## 19       Eckington            0.108953          0.108953   0.017696</span>
+<span style="color: #000000">## 20           Ward5            0.102287          0.102287   0.016614</span>
+</pre></div>
+
+
+</center>
+
+**Number of bathrooms and bedrooms, among other features are important predictors in real estate data because they drive price.**
 
 4. What could you do to improve the model?  
+**Additional preprocessing like one-hot encoding other columns with many classes could prove beneficial. Understanding the dataset better would also lead to better preprocessing, which would ultimately lead to better model creation. Additional iterations with cross-validation over 5 folds and a more robust hyperparameter tuning mechanism like that of grid search could be implemented. Grid search on a CPU with 4 cores and 8 logical processors at a base speed of 2.30 GHz would not do this endeavor any justice. To this end, it may be necessary to purchase a more powerful computer with gaming GPUs.**
 
 5. In the space below, describe your neural network structure (i.e., which independent variables did you use?). How many hidden layers were in the network? How many nodes were in each hidden layer? Which activation function did you use? Did you use an adaptive learning rate? How many epochs did the training algorithm run for?  
+**The final (third iteration) model’s neural network structure includes all twenty of the top most important features listed in number 4. 2 hidden layers and 2 nodes were used, respectively, with an activation function of Tanh. The adaptive learning rate was passed in and set to TRUE, even though it is set to TRUE by default. The model was iterated through 1,000 epochs.**
