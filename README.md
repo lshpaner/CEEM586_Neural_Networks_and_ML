@@ -78,33 +78,30 @@ When constructing your model, also consider the following:
 
 <center>
 
-<!-- HTML generated using hilite.me --><div style="background: #f8f8f8; overflow:auto;width:fit-content;border:border-width:.1em .1em .1em .8em;padding:.6em .6em;"><pre style="margin: 0; line-height: 125%"><span style="color: #000000">## # A tibble: 20 × 11</span>
-<span style="color: #000000">##    model_type case  model_r2 model_int…¹ model…² feature featu…³ featu…⁴ featu…⁵</span>
-<span style="color: #000000">##    &lt;chr&gt;      &lt;chr&gt;    &lt;dbl&gt;       &lt;dbl&gt;   &lt;dbl&gt; &lt;chr&gt;     &lt;dbl&gt;   &lt;dbl&gt; &lt;chr&gt;  </span>
-<span style="color: #000000">##  1 regression 5009     0.684     517791. 513531. Ward        4    2.11e5 Ward &lt;…</span>
-<span style="color: #000000">##  2 regression 5009     0.684     517791. 513531. BATHRO…     2.5 -1.13e5 BATHRO…</span>
-<span style="color: #000000">##  3 regression 5009     0.684     517791. 513531. FIREPL…     0   -7.83e4 FIREPL…</span>
-<span style="color: #000000">##  4 regression 5009     0.684     517791. 513531. LANDAR…  1658   -2.39e4 LANDAR…</span>
-<span style="color: #000000">##  5 regression 480      0.710     729583. 304552. Ward        8   -2.09e5 5 &lt; Wa…</span>
-<span style="color: #000000">##  6 regression 480      0.710     729583. 304552. BATHRO…     1   -1.12e5 BATHRO…</span>
-<span style="color: #000000">##  7 regression 480      0.710     729583. 304552. FIREPL…     0   -8.24e4 FIREPL…</span>
-<span style="color: #000000">##  8 regression 480      0.710     729583. 304552. LANDAR…  1541   -2.11e4 LANDAR…</span>
-<span style="color: #000000">##  9 regression 7067     0.647     430790. 640012. Ward        5    2.07e5 Ward &lt;…</span>
-<span style="color: #000000">## 10 regression 7067     0.647     430790. 640012. BATHRO…     3.5  9.97e4 3.0 &lt; …</span>
-<span style="color: #000000">## 11 regression 7067     0.647     430790. 640012. FIREPL…     0   -8.21e4 FIREPL…</span>
-<span style="color: #000000">## 12 regression 7067     0.647     430790. 640012. LANDAR…  1680   -1.52e4 1658 &lt;…</span>
-<span style="color: #000000">## 13 regression 5089     0.664     418250. 692433. Ward        5    2.06e5 Ward &lt;…</span>
-<span style="color: #000000">## 14 regression 5089     0.664     418250. 692433. BATHRO…     3.5  1.00e5 3.0 &lt; …</span>
-<span style="color: #000000">## 15 regression 5089     0.664     418250. 692433. FIREPL…     0   -7.84e4 FIREPL…</span>
-<span style="color: #000000">## 16 regression 5089     0.664     418250. 692433. LANDAR…  6200    4.66e4 2926 &lt;…</span>
-<span style="color: #000000">## 17 regression 4938     0.433     401948. 824680. Ward        4    2.11e5 Ward &lt;…</span>
-<span style="color: #000000">## 18 regression 4938     0.433     401948. 824680. EYB      1947   -2.16e4 EYB &lt;=…</span>
-<span style="color: #000000">## 19 regression 4938     0.433     401948. 824680. BATHRO…     3    1.29e4 2.5 &lt; …</span>
-<span style="color: #000000">## 20 regression 4938     0.433     401948. 824680. YearSo…  2016    2.21e5 2016 &lt;…</span>
-<span style="color: #000000">## # … with 2 more variables: data &lt;list&gt;, prediction &lt;dbl&gt;, and abbreviated</span>
-<span style="color: #000000">## #   variable names ¹​model_intercept, ²​model_prediction, ³​feature_value,</span>
-<span style="color: #000000">## #   ⁴​feature_weight, ⁵​feature_desc</span>
+<!-- HTML generated using hilite.me --><div style="background: #f8f8f8; overflow:auto;width:fit-content;border:border-width:.1em .1em .1em .8em;padding:.0em .0em;"><pre style="margin: 0; line-height: 125%"><span style="color: #000000">##  case   model_r2   model_intercept   model_prediction    feature     prediction </span>
+<span style="color: #000000">## ------ ---------- ----------------- ------------------ ------------ ------------</span>
+<span style="color: #000000">##  5009    0.6843        517791             513531           Ward        617066   </span>
+<span style="color: #000000">##  5009    0.6843        517791             513531        BATHROOMS      617066   </span>
+<span style="color: #000000">##  5009    0.6843        517791             513531        FIREPLACES     617066   </span>
+<span style="color: #000000">##  5009    0.6843        517791             513531         LANDAREA      617066   </span>
+<span style="color: #000000">##  480     0.7096        729583             304552           Ward        253949   </span>
+<span style="color: #000000">##  480     0.7096        729583             304552        BATHROOMS      253949   </span>
+<span style="color: #000000">##  480     0.7096        729583             304552        FIREPLACES     253949   </span>
+<span style="color: #000000">##  480     0.7096        729583             304552         LANDAREA      253949   </span>
+<span style="color: #000000">##  7067    0.6472        430790             640012           Ward        628222   </span>
+<span style="color: #000000">##  7067    0.6472        430790             640012        BATHROOMS      628222   </span>
+<span style="color: #000000">##  7067    0.6472        430790             640012        FIREPLACES     628222   </span>
+<span style="color: #000000">##  7067    0.6472        430790             640012         LANDAREA      628222   </span>
+<span style="color: #000000">##  5089    0.664         418250             692433           Ward        568733   </span>
+<span style="color: #000000">##  5089    0.664         418250             692433        BATHROOMS      568733   </span>
+<span style="color: #000000">##  5089    0.664         418250             692433        FIREPLACES     568733   </span>
+<span style="color: #000000">##  5089    0.664         418250             692433         LANDAREA      568733   </span>
+<span style="color: #000000">##  4938    0.4334        401948             824680           Ward        824680   </span>
+<span style="color: #000000">##  4938    0.4334        401948             824680           EYB         824680   </span>
+<span style="color: #000000">##  4938    0.4334        401948             824680        BATHROOMS      824680   </span>
+<span style="color: #000000">##  4938    0.4334        401948             824680         YearSold      824680   </span>
 </pre></div>
+
 
 </center>
 
