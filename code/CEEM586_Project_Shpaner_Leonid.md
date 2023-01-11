@@ -1,4 +1,4 @@
-Neural Networks and Machine Learning Course Project
+Neural Networks and Machine Learning in R - Course Project
 ================
 Leonid Shpaner
 2022-11-19

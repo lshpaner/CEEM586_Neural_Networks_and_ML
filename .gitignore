@@ -7,7 +7,7 @@
 *.Rmd
 
 # ignore .Rproj file
-/CEEM586_Neural_Networks_and_ML.Rproj
+*.Rproj
 
 # ignore cache folder(s)
-/code/CEEM586_Project_cache
+/code/CEEM586_Project_Shpaner_Leonid_cache/gfm
