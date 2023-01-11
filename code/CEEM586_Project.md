@@ -1,7 +1,7 @@
 Neural Networks and Machine Learning Course Project
 ================
-## Cornell University
-### Leonid Shpaner, 2022-11-19
+Leonid Shpaner
+2022-11-19
 
 # Part One
 
@@ -10,21 +10,21 @@ Neural Networks and Machine Learning Course Project
 ``` r
 pack <- function(lib){
   new.lib <- lib[!(lib %in% 
-                     installed.packages()[, "Package"])]
+                     installed.packages()[, 'Package'])]
   if (length(new.lib)) 
     install.packages(new.lib, dependencies = TRUE)
   sapply(lib, require, character.only = TRUE)
 }
 
 packages <- c('neuralnet', 'corrplot', 'caret', 'caTools', 'ggplot2', 'ggpubr',
-              'cowplot', 'h2o', 'lime')
+              'cowplot', 'h2o', 'lime', 'pander', 'DT')
 pack(packages)
 ```
 
     ## neuralnet  corrplot     caret   caTools   ggplot2    ggpubr   cowplot       h2o 
     ##      TRUE      TRUE      TRUE      TRUE      TRUE      TRUE      TRUE      TRUE 
-    ##      lime 
-    ##      TRUE
+    ##      lime    pander        DT 
+    ##      TRUE      TRUE      TRUE
 
 ``` r
 getwd() # establish current working directory
@@ -36,15 +36,16 @@ Repositories/CEEM586_Neural_Networks_and_ML/code”
 ``` r
 # set new working directory
 working_dir = paste('C:/Users/lshpaner/OneDrive/Cornell University/Coursework/',
-                    'CEEM586 - Neural Networks and Machine Learning/', sep='')
+                    'Data Science Certificate Program/',
+                    'CEEM586 - Neural Networks and Machine Learning/', sep = '')
 setwd(working_dir)
 ```
 
 ``` r
 # Read in the data
-election <- read.csv(paste("https://raw.githubusercontent.com/lshpaner/",
-                           "CEEM586_Neural_Networks_and_ML/main/data/",
-                           "ElectionData.csv", sep=""), row.names = 1, 
+election <- read.csv(paste('https://raw.githubusercontent.com/lshpaner/',
+                           'CEEM586_Neural_Networks_and_ML/main/data/',
+                           'ElectionData.csv', sep = ''), row.names = 1, 
                      header = TRUE,
                      stringsAsFactors = FALSE)
 ```
@@ -54,111 +55,209 @@ election <- read.csv(paste("https://raw.githubusercontent.com/lshpaner/",
 ``` r
 # remove index column to better adapt to machine learning format
 rownames(election) <- NULL
-head(election) #inspect the df
+pandoc.table(head(election, 3), style = 'grid')  # inspect the df
 ```
 
-    ##   fips US.regions PacificCoast MountainsPlains South Midwest Northeast
-    ## 1 1001          3            0               0     1       0         0
-    ## 2 1003          3            0               0     1       0         0
-    ## 3 1005          3            0               0     1       0         0
-    ## 4 1007          3            0               0     1       0         0
-    ## 5 1009          3            0               0     1       0         0
-    ## 6 1011          3            0               0     1       0         0
-    ##   Population PercentFemale PercentWhite PercentAfricanAmerican
-    ## 1  41435.460          51.4         77.9                   18.7
-    ## 2 155686.358          51.2         87.1                    9.6
-    ## 3  21186.956          46.6         50.2                   47.6
-    ## 4  17779.740          45.9         76.3                   22.1
-    ## 5  44097.316          50.5         96.0                    1.8
-    ## 6   8460.504          45.3         26.9                   70.1
-    ##   PercentNativeAmerican PercentAsian PercentHawaianPI PercentTwoorMore
-    ## 1                   0.5          1.1              0.1              1.8
-    ## 2                   0.7          0.9              0.1              1.6
-    ## 3                   0.6          0.5              0.2              0.9
-    ## 4                   0.4          0.2              0.1              0.9
-    ## 5                   0.6          0.3              0.1              1.2
-    ## 6                   0.8          0.3              0.7              1.1
-    ##   PercentHispanic Percent.White.Not.Hispanic Percent.foreign.born
-    ## 1             2.7                       75.6                  1.6
-    ## 2             4.6                       83.0                  3.6
-    ## 3             4.5                       46.6                  2.9
-    ## 4             2.1                       74.5                  1.2
-    ## 5             8.7                       87.8                  4.3
-    ## 6             7.5                       22.1                  5.4
-    ##   PercentLangDiffEnglish Bachlorsorhigher HighSchoolGrad HomeOwnership
-    ## 1                    3.5             20.9           64.7          76.8
-    ## 2                    5.5             27.7           61.4          72.6
-    ## 3                    5.0             13.4           60.3          67.7
-    ## 4                    2.1             12.1           65.4          79.0
-    ## 5                    7.3             12.1           64.9          81.0
-    ## 6                    5.2             12.5           55.3          74.3
-    ##   PersonsPerHouse IncomeperCapita PercentBelowPoverty PopPerSqMile    Clinton
-    ## 1            2.71           24571                12.1         91.8 0.23956855
-    ## 2            2.52           26766                13.9        114.6 0.19565310
-    ## 3            2.66           16829                26.7         31.0 0.46660250
-    ## 4            3.03           17427                18.1         36.8 0.21422039
-    ## 5            2.70           20730                15.8         88.9 0.08469902
-    ## 6            2.73           18628                21.6         17.5 0.75090406
-    ##       Trump
-    ## 1 0.7343579
-    ## 2 0.7735147
-    ## 3 0.5227141
-    ## 4 0.7696616
-    ## 5 0.8985188
-    ## 6 0.2422889
+    ## 
+    ## 
+    ## +------+------------+--------------+-----------------+-------+---------+
+    ## | fips | US.regions | PacificCoast | MountainsPlains | South | Midwest |
+    ## +======+============+==============+=================+=======+=========+
+    ## | 1001 |     3      |      0       |        0        |   1   |    0    |
+    ## +------+------------+--------------+-----------------+-------+---------+
+    ## | 1003 |     3      |      0       |        0        |   1   |    0    |
+    ## +------+------------+--------------+-----------------+-------+---------+
+    ## | 1005 |     3      |      0       |        0        |   1   |    0    |
+    ## +------+------------+--------------+-----------------+-------+---------+
+    ## 
+    ## Table: Table continues below
+    ## 
+    ##  
+    ## 
+    ## +-----------+------------+---------------+--------------+
+    ## | Northeast | Population | PercentFemale | PercentWhite |
+    ## +===========+============+===============+==============+
+    ## |     0     |   41435    |     51.4      |     77.9     |
+    ## +-----------+------------+---------------+--------------+
+    ## |     0     |   155686   |     51.2      |     87.1     |
+    ## +-----------+------------+---------------+--------------+
+    ## |     0     |   21187    |     46.6      |     50.2     |
+    ## +-----------+------------+---------------+--------------+
+    ## 
+    ## Table: Table continues below
+    ## 
+    ##  
+    ## 
+    ## +------------------------+-----------------------+--------------+
+    ## | PercentAfricanAmerican | PercentNativeAmerican | PercentAsian |
+    ## +========================+=======================+==============+
+    ## |          18.7          |          0.5          |     1.1      |
+    ## +------------------------+-----------------------+--------------+
+    ## |          9.6           |          0.7          |     0.9      |
+    ## +------------------------+-----------------------+--------------+
+    ## |          47.6          |          0.6          |     0.5      |
+    ## +------------------------+-----------------------+--------------+
+    ## 
+    ## Table: Table continues below
+    ## 
+    ##  
+    ## 
+    ## +------------------+------------------+-----------------+
+    ## | PercentHawaianPI | PercentTwoorMore | PercentHispanic |
+    ## +==================+==================+=================+
+    ## |       0.1        |       1.8        |       2.7       |
+    ## +------------------+------------------+-----------------+
+    ## |       0.1        |       1.6        |       4.6       |
+    ## +------------------+------------------+-----------------+
+    ## |       0.2        |       0.9        |       4.5       |
+    ## +------------------+------------------+-----------------+
+    ## 
+    ## Table: Table continues below
+    ## 
+    ##  
+    ## 
+    ## +----------------------------+----------------------+------------------------+
+    ## | Percent.White.Not.Hispanic | Percent.foreign.born | PercentLangDiffEnglish |
+    ## +============================+======================+========================+
+    ## |            75.6            |         1.6          |          3.5           |
+    ## +----------------------------+----------------------+------------------------+
+    ## |             83             |         3.6          |          5.5           |
+    ## +----------------------------+----------------------+------------------------+
+    ## |            46.6            |         2.9          |           5            |
+    ## +----------------------------+----------------------+------------------------+
+    ## 
+    ## Table: Table continues below
+    ## 
+    ##  
+    ## 
+    ## +------------------+----------------+---------------+-----------------+
+    ## | Bachlorsorhigher | HighSchoolGrad | HomeOwnership | PersonsPerHouse |
+    ## +==================+================+===============+=================+
+    ## |       20.9       |      64.7      |     76.8      |      2.71       |
+    ## +------------------+----------------+---------------+-----------------+
+    ## |       27.7       |      61.4      |     72.6      |      2.52       |
+    ## +------------------+----------------+---------------+-----------------+
+    ## |       13.4       |      60.3      |     67.7      |      2.66       |
+    ## +------------------+----------------+---------------+-----------------+
+    ## 
+    ## Table: Table continues below
+    ## 
+    ##  
+    ## 
+    ## +-----------------+---------------------+--------------+---------+--------+
+    ## | IncomeperCapita | PercentBelowPoverty | PopPerSqMile | Clinton | Trump  |
+    ## +=================+=====================+==============+=========+========+
+    ## |      24571      |        12.1         |     91.8     | 0.2396  | 0.7344 |
+    ## +-----------------+---------------------+--------------+---------+--------+
+    ## |      26766      |        13.9         |    114.6     | 0.1957  | 0.7735 |
+    ## +-----------------+---------------------+--------------+---------+--------+
+    ## |      16829      |        26.7         |      31      | 0.4666  | 0.5227 |
+    ## +-----------------+---------------------+--------------+---------+--------+
 
 ``` r
-# remove Clinton from the dataframe
-election_new <- election; election_new$Clinton <- NULL
+election_new <- election; election_new$Clinton <- NULL # remove Clinton from df
 
-head(election_new) # reinspect the new df
+pandoc.table(head(election_new, 3), style = 'grid') # reinspect the new df
 ```
 
-    ##   fips US.regions PacificCoast MountainsPlains South Midwest Northeast
-    ## 1 1001          3            0               0     1       0         0
-    ## 2 1003          3            0               0     1       0         0
-    ## 3 1005          3            0               0     1       0         0
-    ## 4 1007          3            0               0     1       0         0
-    ## 5 1009          3            0               0     1       0         0
-    ## 6 1011          3            0               0     1       0         0
-    ##   Population PercentFemale PercentWhite PercentAfricanAmerican
-    ## 1  41435.460          51.4         77.9                   18.7
-    ## 2 155686.358          51.2         87.1                    9.6
-    ## 3  21186.956          46.6         50.2                   47.6
-    ## 4  17779.740          45.9         76.3                   22.1
-    ## 5  44097.316          50.5         96.0                    1.8
-    ## 6   8460.504          45.3         26.9                   70.1
-    ##   PercentNativeAmerican PercentAsian PercentHawaianPI PercentTwoorMore
-    ## 1                   0.5          1.1              0.1              1.8
-    ## 2                   0.7          0.9              0.1              1.6
-    ## 3                   0.6          0.5              0.2              0.9
-    ## 4                   0.4          0.2              0.1              0.9
-    ## 5                   0.6          0.3              0.1              1.2
-    ## 6                   0.8          0.3              0.7              1.1
-    ##   PercentHispanic Percent.White.Not.Hispanic Percent.foreign.born
-    ## 1             2.7                       75.6                  1.6
-    ## 2             4.6                       83.0                  3.6
-    ## 3             4.5                       46.6                  2.9
-    ## 4             2.1                       74.5                  1.2
-    ## 5             8.7                       87.8                  4.3
-    ## 6             7.5                       22.1                  5.4
-    ##   PercentLangDiffEnglish Bachlorsorhigher HighSchoolGrad HomeOwnership
-    ## 1                    3.5             20.9           64.7          76.8
-    ## 2                    5.5             27.7           61.4          72.6
-    ## 3                    5.0             13.4           60.3          67.7
-    ## 4                    2.1             12.1           65.4          79.0
-    ## 5                    7.3             12.1           64.9          81.0
-    ## 6                    5.2             12.5           55.3          74.3
-    ##   PersonsPerHouse IncomeperCapita PercentBelowPoverty PopPerSqMile     Trump
-    ## 1            2.71           24571                12.1         91.8 0.7343579
-    ## 2            2.52           26766                13.9        114.6 0.7735147
-    ## 3            2.66           16829                26.7         31.0 0.5227141
-    ## 4            3.03           17427                18.1         36.8 0.7696616
-    ## 5            2.70           20730                15.8         88.9 0.8985188
-    ## 6            2.73           18628                21.6         17.5 0.2422889
+    ## 
+    ## 
+    ## +------+------------+--------------+-----------------+-------+---------+
+    ## | fips | US.regions | PacificCoast | MountainsPlains | South | Midwest |
+    ## +======+============+==============+=================+=======+=========+
+    ## | 1001 |     3      |      0       |        0        |   1   |    0    |
+    ## +------+------------+--------------+-----------------+-------+---------+
+    ## | 1003 |     3      |      0       |        0        |   1   |    0    |
+    ## +------+------------+--------------+-----------------+-------+---------+
+    ## | 1005 |     3      |      0       |        0        |   1   |    0    |
+    ## +------+------------+--------------+-----------------+-------+---------+
+    ## 
+    ## Table: Table continues below
+    ## 
+    ##  
+    ## 
+    ## +-----------+------------+---------------+--------------+
+    ## | Northeast | Population | PercentFemale | PercentWhite |
+    ## +===========+============+===============+==============+
+    ## |     0     |   41435    |     51.4      |     77.9     |
+    ## +-----------+------------+---------------+--------------+
+    ## |     0     |   155686   |     51.2      |     87.1     |
+    ## +-----------+------------+---------------+--------------+
+    ## |     0     |   21187    |     46.6      |     50.2     |
+    ## +-----------+------------+---------------+--------------+
+    ## 
+    ## Table: Table continues below
+    ## 
+    ##  
+    ## 
+    ## +------------------------+-----------------------+--------------+
+    ## | PercentAfricanAmerican | PercentNativeAmerican | PercentAsian |
+    ## +========================+=======================+==============+
+    ## |          18.7          |          0.5          |     1.1      |
+    ## +------------------------+-----------------------+--------------+
+    ## |          9.6           |          0.7          |     0.9      |
+    ## +------------------------+-----------------------+--------------+
+    ## |          47.6          |          0.6          |     0.5      |
+    ## +------------------------+-----------------------+--------------+
+    ## 
+    ## Table: Table continues below
+    ## 
+    ##  
+    ## 
+    ## +------------------+------------------+-----------------+
+    ## | PercentHawaianPI | PercentTwoorMore | PercentHispanic |
+    ## +==================+==================+=================+
+    ## |       0.1        |       1.8        |       2.7       |
+    ## +------------------+------------------+-----------------+
+    ## |       0.1        |       1.6        |       4.6       |
+    ## +------------------+------------------+-----------------+
+    ## |       0.2        |       0.9        |       4.5       |
+    ## +------------------+------------------+-----------------+
+    ## 
+    ## Table: Table continues below
+    ## 
+    ##  
+    ## 
+    ## +----------------------------+----------------------+------------------------+
+    ## | Percent.White.Not.Hispanic | Percent.foreign.born | PercentLangDiffEnglish |
+    ## +============================+======================+========================+
+    ## |            75.6            |         1.6          |          3.5           |
+    ## +----------------------------+----------------------+------------------------+
+    ## |             83             |         3.6          |          5.5           |
+    ## +----------------------------+----------------------+------------------------+
+    ## |            46.6            |         2.9          |           5            |
+    ## +----------------------------+----------------------+------------------------+
+    ## 
+    ## Table: Table continues below
+    ## 
+    ##  
+    ## 
+    ## +------------------+----------------+---------------+-----------------+
+    ## | Bachlorsorhigher | HighSchoolGrad | HomeOwnership | PersonsPerHouse |
+    ## +==================+================+===============+=================+
+    ## |       20.9       |      64.7      |     76.8      |      2.71       |
+    ## +------------------+----------------+---------------+-----------------+
+    ## |       27.7       |      61.4      |     72.6      |      2.52       |
+    ## +------------------+----------------+---------------+-----------------+
+    ## |       13.4       |      60.3      |     67.7      |      2.66       |
+    ## +------------------+----------------+---------------+-----------------+
+    ## 
+    ## Table: Table continues below
+    ## 
+    ##  
+    ## 
+    ## +-----------------+---------------------+--------------+--------+
+    ## | IncomeperCapita | PercentBelowPoverty | PopPerSqMile | Trump  |
+    ## +=================+=====================+==============+========+
+    ## |      24571      |        12.1         |     91.8     | 0.7344 |
+    ## +-----------------+---------------------+--------------+--------+
+    ## |      26766      |        13.9         |    114.6     | 0.7735 |
+    ## +-----------------+---------------------+--------------+--------+
+    ## |      16829      |        26.7         |      31      | 0.5227 |
+    ## +-----------------+---------------------+--------------+--------+
 
 ``` r
-str(election_new[1,]) # inspect the structure of the df
+str(election_new[1, ]) # inspect the structure of the df
 ```
 
     ## 'data.frame':    1 obs. of  27 variables:
@@ -191,58 +290,58 @@ str(election_new[1,]) # inspect the structure of the df
     ##  $ Trump                     : num 0.734
 
 ``` r
-cat("Dimensions of dataset:", dim(election_new), # dimensions of dataset
-    "\n", "There are", sum(is.na(election_new)),  
-    "'NA' values in the entire dataset.")
+cat('Dimensions of dataset:', dim(election_new), # dimensions of dataframe
+    '\n', 'There are', sum(is.na(election_new)),  
+    'NA values in the entire dataset.')
 ```
 
     ## Dimensions of dataset: 3143 27 
-    ##  There are 0 'NA' values in the entire dataset.
+    ##  There are 0 NA values in the entire dataset.
 
 ## Exploratory Data Analysis (EDA)
 
 ### Correlation Matrix
 
 ``` r
-# create a correl. matrix between all variables
-frame_trump <- cor(election_new) 
-
-corrplot(frame_trump, 
-         mar = c(0, 0, 0, 0), 
-         method="color",
-         col=colorRampPalette(c("#FC0320", 
-                                "white", 
-                                "#FF0000"))(100), 
-         addCoef.col = "black", tl.col="black", 
-         tl.srt=6, tl.offset = 1,
-         number.cex=0.55, tl.cex = 0.7, type='lower')
+# create function to plot correlation matrix and establish multicollinearity
+# takes one input (df) to pass in dataframe of interest
+multicollinearity <- function(df, tl.srt, tl.offset, number.cex, tl.cex) {
+  
+      # Examine between predictor correlations/multicollinearity
+      corr <- cor(df, use = 'pairwise.complete.obs')
+      corrplot(corr, mar = c(0, 0, 0, 0), method = 'color', 
+                     col = colorRampPalette(c('#FC0320', '#FFFFFF', 
+                                              '#FF0000'))(100), 
+                     addCoef.col = 'black', tl.srt = tl.srt, 
+                     tl.offset = tl.offset, tl.col = 'black', 
+                     number.cex = number.cex, tl.cex = tl.cex, type = 'lower')
+      
+      # count how many highly correlate variables exist based on 0.75 threshold
+      highCorr <- findCorrelation(corr, cutoff = 0.75)
+      # find correlated names
+      highCorr_names <- findCorrelation(corr, cutoff = 0.75, names = TRUE)
+      cat(' There are', length(highCorr_names), 'highly correlated predictors.', 
+          '\n The following variables should be omitted:',  
+      paste('\n', unlist(highCorr_names)))
+    
+} 
 ```
-
-<img src="figs/unnamed-chunk-5-1.png" style="display: block; margin: auto;" />
 
 ``` r
-# assign variable to count how many highly correlated
-# variables there exist based on 0.75 threshold
-highCorr <- findCorrelation(frame_trump, cutoff = 0.75)
-
-# find correlated names
-highCorr_names <- findCorrelation(frame_trump, cutoff = 0.75, 
-                                  names = TRUE)
-
-cat("There are", 
-    length(highCorr_names), 
-    "highly correlated predictors. \n \n")
+# create a correlation matrix between all variables by calling the function
+multicollinearity(election_new, tl.srt = 6, tl.offset = 1, number.cex = 0.55, 
+                  tl.cex = 0.7) 
 ```
 
-There are 5 highly correlated predictors.
+<img src="figs/unnamed-chunk-6-1.png" style="display: block; margin: auto;" />
 
-``` r
-highCorr_names
-```
-
-\[1\] “Percent.White.Not.Hispanic” “Percent.foreign.born”  
-\[3\] “PercentLangDiffEnglish” “PercentWhite”  
-\[5\] “Bachlorsorhigher”
+    ##  There are 5 highly correlated predictors. 
+    ##  The following variables should be omitted: 
+    ##  Percent.White.Not.Hispanic 
+    ##  Percent.foreign.born 
+    ##  PercentLangDiffEnglish 
+    ##  PercentWhite 
+    ##  Bachlorsorhigher
 
 ### Correlation
 
@@ -261,47 +360,50 @@ to compare the two.
 
 ``` r
 x1 = election$Trump; y1 = election$Clinton
-corrplot1 <- ggplot(election, aes(x = x1, y = y1)) +
-                    ggtitle("Clinton vs. Trump by Fraction of Votes") +
+
+plot1 <- ggplot(election, aes(x = x1, y = y1)) +
+                    ggtitle('Clinton vs. Trump by Fraction of Votes') +
                     xlab('Trump') + ylab('Clinton') +
-                    geom_point(pch=1) +
-                    geom_smooth(method="lm", se=FALSE) +
+                    geom_point(pch = 1) +
+                    geom_smooth(method = 'lm', se = FALSE) +
                     theme_classic() +
                     # Add correlation coefficient
-                    stat_cor(method = "pearson", label.x = 0.05, label.y = 0.02)
+                    stat_cor(method = 'pearson', label.x = 0.05, label.y = 0.02)
 
 x2 = election$PercentBelowPoverty; y2 = election$IncomeperCapita
-corrplot2 <- ggplot(election, aes(x = x2, y = y2)) +
-                    ggtitle("Income Per Capita vs. Percent Below Poverty") +
+
+plot2 <- ggplot(election, aes(x = x2, y = y2)) +
+                    ggtitle('Income Per Capita vs. Percent Below Poverty') +
                     xlab('Percent Below Poverty') + ylab('Income Per Capita') +
-                    geom_point(pch=1) +
-                    geom_smooth(method="lm", se=FALSE) +
+                    geom_point(pch = 1) +
+                    geom_smooth(method = 'lm', se = FALSE) +
                     theme_classic() +
                     # Add correlation coefficient
-                    stat_cor(method = "pearson", label.x = 0.15, label.y = 0.20)
+                    stat_cor(method = 'pearson', label.x = 0.15, label.y = 0.20)
 
 x3 = election$PercentBelowPoverty; y3 = election$HomeOwnership
-corrplot3 <- ggplot(election, aes(x = x3, y = y3)) +
-                    ggtitle("Home Ownership vs. Percent Below Poverty") +
+
+plot3 <- ggplot(election, aes(x = x3, y = y3)) +
+                    ggtitle('Home Ownership vs. Percent Below Poverty') +
                     xlab('Percent Below Poverty') + ylab('Home Ownership') +
-                    geom_point(pch=1) +
-                    geom_smooth(method="lm", se=FALSE) +
+                    geom_point(pch = 1) +
+                    geom_smooth(method = 'lm', se = FALSE) +
                     theme_classic() +
                     # Add correlation coefficient
-                    stat_cor(method = "pearson", label.x = 0.15, label.y = 10)
+                    stat_cor(method = 'pearson', label.x = 0.15, label.y = 10)
 
 x4 = election$PercentBelowPoverty; y4 = election$PersonsPerHouse
-corrplot4 <- ggplot(election, aes(x = x4, y = y4)) +
-                    ggtitle("Persons Per House vs. Percent Below Poverty") +
+
+plot4 <- ggplot(election, aes(x = x4, y = y4)) +
+                    ggtitle('Persons Per House vs. Percent Below Poverty') +
                     xlab('Percent Below Poverty') + ylab('Persons Per House') +
-                    geom_point(pch=1) +
-                    geom_smooth(method="lm", se=FALSE) +
+                    geom_point(pch = 1) +
+                    geom_smooth(method = 'lm', se = FALSE) +
                     theme_classic() +
                     # Add correlation coefficient
-                    stat_cor(method = "pearson", label.x = 0.15, label.y = 0.20)
+                    stat_cor(method = 'pearson', label.x = 0.15, label.y = 0.20)
 
-plot_grid(corrplot1, corrplot2, corrplot3, corrplot4, labels="AUTO", ncol = 2,
-          align = "v")
+plot_grid(plot1, plot2, plot3, plot4, labels = 'AUTO', ncol = 2, align = 'v')
 ```
 
     ## `geom_smooth()` using formula = 'y ~ x'
@@ -332,12 +434,12 @@ sample <- sample(c(TRUE, FALSE), nrow(election_new), replace=TRUE,
 train  <- election_new[sample, ] # training set
 test   <- election_new[!sample, ] # test set
 
-cat("\n Training Dimensions:",dim(train),
-    "\n Testing Dimensions:", dim(test), "\n",
-    "\n Training Dimensions Percentage:", round(nrow(train)/
-                                                nrow(election_new),2),
-    "\n Testing Dimensions Percentage:", round(nrow(test)/
-                                               nrow(election_new),2))
+cat('\n Training Dimensions:',dim(train),
+    '\n Testing Dimensions:', dim(test), '\n',
+    '\n Training Dimensions Percentage:', round(nrow(train)/
+                                                nrow(election_new), 2),
+    '\n Testing Dimensions Percentage:', round(nrow(test)/
+                                               nrow(election_new), 2))
 ```
 
     ## 
@@ -351,9 +453,13 @@ cat("\n Training Dimensions:",dim(train),
 
 ``` r
 # Create a function to normalize the data by scaling it between 0 and 1
-normalize <- function(x) {return ((x-min(x))/(max(x)-min(x)))}
+normalize <- function(x) {
+  
+  return ((x-min(x))/(max(x)-min(x)))
 
-# Use the normalize function to normalize each column of train and test
+}
+
+# Use the normalize function to normalize each column of train and test.
 # This creates a new dataframe by applying the normalize function to each row 
 # of the dataset ‘frame’
 maxmindtrain <- as.data.frame(lapply(train, normalize)) 
@@ -373,8 +479,8 @@ testdata <- cbind(input_test, output_test)
 ## Generalized Linear Model
 
 ``` r
-set.seed(222)
-lm.fit <- glm(Trump~., data=trainingdata)
+set.seed(222) # set the random seed for reproducibility
+lm.fit <- glm(Trump ~ ., data = trainingdata)
 summary(lm.fit)
 ```
 
@@ -429,33 +535,32 @@ set.seed(222)
 n_train <- names(trainingdata)
 n_test <- names(testdata)
 
-f_train <- as.formula(paste("Trump ~", paste(n_train[!n_train %in% "Trump"], 
-                                             collapse = " + ")))
-f_test <- as.formula(paste("Trump ~", paste(n_test[!n_test %in% "Trump"], 
-                                            collapse = " + ")))
+f_train <- as.formula(paste('Trump ~', paste(n_train[!n_train %in% 'Trump'], 
+                                             collapse = ' + ')))
+f_test <- as.formula(paste('Trump ~', paste(n_test[!n_test %in% 'Trump'], 
+                                            collapse = ' + ')))
 
 # 2 hidden layers with 5 and 3 neurons, respectively
-nn_train <- neuralnet(f_train,data=trainingdata,hidden=c(5,3),linear.output=T) 
-nn_test <- neuralnet(f_test,data=testdata,hidden=c(5,3), linear.output=T) 
-plot(nn_train, rep = "best") # plot the neural network - training data
+nn_train <- neuralnet(f_train, data = trainingdata, hidden = c(5, 3), 
+                      linear.output = T) 
+nn_test <- neuralnet(f_test, data = testdata, hidden = c(5, 3), 
+                     linear.output = T) 
+plot(nn_train, rep = 'best') # plot the neural network - training data
 ```
 
 <img src="figs/unnamed-chunk-13-1.png" style="display: block; margin: auto;" />
 \### Predict on Training Data and Test Data
 
 ``` r
-set.seed(222) 
+set.seed(222) # set the random seed for reproducibility
 # Compute fitted values from the training data
-predictions_train <- predict(nn_train, newdata=trainingdata)
-
+predictions_train <- predict(nn_train, newdata = trainingdata)
 # Test the neural networks out of sample performance
-predictions_test <- predict(nn_test, newdata=testdata)
+predictions_test <- predict(nn_test, newdata = testdata)
 # Compute mean absolute error between true and fitted values
 # we are wrong on average by this many fraction of votes
-
-train_mae = mean(abs(predictions_train-output_train)) 
-test_mae = mean(abs(predictions_test-output_test)) 
-
+train_mae = mean(abs(predictions_train - output_train)) 
+test_mae = mean(abs(predictions_test - output_test)) 
 cat('\n', 'Train MAE:', train_mae,
     '\n', 'Test MAE:', test_mae,
     '\n', 'Difference in MAE Between Train and Validation Set:', 
@@ -478,16 +583,16 @@ h2o.init()
     ##  Connection successful!
     ## 
     ## R is connected to the H2O cluster: 
-    ##     H2O cluster uptime:         1 days 19 hours 
+    ##     H2O cluster uptime:         6 minutes 30 seconds 
     ##     H2O cluster timezone:       America/Los_Angeles 
     ##     H2O data parsing timezone:  UTC 
     ##     H2O cluster version:        3.38.0.1 
-    ##     H2O cluster version age:    2 months and 5 days  
+    ##     H2O cluster version age:    3 months and 22 days !!! 
     ##     H2O cluster name:           H2O_started_from_R_lshpaner_orw759 
     ##     H2O cluster total nodes:    1 
-    ##     H2O cluster total memory:   3.59 GB 
-    ##     H2O cluster total cores:    8 
-    ##     H2O cluster allowed cores:  8 
+    ##     H2O cluster total memory:   7.87 GB 
+    ##     H2O cluster total cores:    16 
+    ##     H2O cluster allowed cores:  16 
     ##     H2O cluster healthy:        TRUE 
     ##     H2O Connection ip:          localhost 
     ##     H2O Connection port:        54321 
@@ -498,23 +603,33 @@ h2o.init()
 ## Read in the data
 
 ``` r
-housing <- read.csv(paste("https://raw.githubusercontent.com/lshpaner/",
-                          "CEEM586_Neural_Networks_and_ML/main/data/",
-                          "DC_PropertieResidentialunder1mill.csv", sep=""), 
-                    header=TRUE)
-head(housing[,1:10]) # examine first five columns of data
+housing <- read.csv(paste('https://raw.githubusercontent.com/lshpaner/',
+                          'CEEM586_Neural_Networks_and_ML/main/data/',
+                          'DC_PropertieResidentialunder1mill.csv', sep = ''), 
+                    header = TRUE)
+# examine first 10 columns of data
+pandoc.table(head(housing[, 1:10], 5), style = 'grid', split.table = Inf) 
 ```
 
-    ##      X.1 BATHRM HF_BATHRM BATHROOMS AC1IsYes NUM_UNITS ROOMS BEDRM  EYB STORIES
-    ## 1 105692      3         1       3.5        1         1     8     3 2018       2
-    ## 2 105499      2         0       2.0        0         1     6     2 1947       2
-    ## 3  85758      2         0       2.0        0         2    10     4 1955       2
-    ## 4  87741      1         0       1.0        0         1     5     2 1945       2
-    ## 5 102505      1         0       1.0        0         1     4     2 1953       2
-    ## 6  90764      1         0       1.0        0         1     4     1 1947       1
+    ## 
+    ## 
+    ## +--------+--------+-----------+-----------+----------+-----------+-------+-------+------+---------+
+    ## |  X.1   | BATHRM | HF_BATHRM | BATHROOMS | AC1IsYes | NUM_UNITS | ROOMS | BEDRM | EYB  | STORIES |
+    ## +========+========+===========+===========+==========+===========+=======+=======+======+=========+
+    ## | 105692 |   3    |     1     |    3.5    |    1     |     1     |   8   |   3   | 2018 |    2    |
+    ## +--------+--------+-----------+-----------+----------+-----------+-------+-------+------+---------+
+    ## | 105499 |   2    |     0     |     2     |    0     |     1     |   6   |   2   | 1947 |    2    |
+    ## +--------+--------+-----------+-----------+----------+-----------+-------+-------+------+---------+
+    ## | 85758  |   2    |     0     |     2     |    0     |     2     |  10   |   4   | 1955 |    2    |
+    ## +--------+--------+-----------+-----------+----------+-----------+-------+-------+------+---------+
+    ## | 87741  |   1    |     0     |     1     |    0     |     1     |   5   |   2   | 1945 |    2    |
+    ## +--------+--------+-----------+-----------+----------+-----------+-------+-------+------+---------+
+    ## | 102505 |   1    |     0     |     1     |    0     |     1     |   4   |   2   | 1953 |    2    |
+    ## +--------+--------+-----------+-----------+----------+-----------+-------+-------+------+---------+
 
 ``` r
-str(housing[1,]) # examine structure of dataframe
+# examine structure of dataframe
+str(housing[1, ]) # only look at first column
 ```
 
     ## 'data.frame':    1 obs. of  108 variables:
@@ -630,10 +745,12 @@ housing$EXTWALL <- NULL
 housing$ROOF <- NULL
 housing$INTWALL <- NULL
 housing$ASSESSMENT_SUBNBHD <- NULL
+
 # contains 53 levels (already as variables/columns)
 housing$ASSESSMENT_NBHD <- NULL
 housing$SQUARE <- NULL
 housing$QUADRANT <- NULL
+
 # remove logPrice since PRICE is the target, and we do not
 # need to linearize it
 housing$logPrice <- NULL
@@ -651,25 +768,26 @@ names(housing[, sapply(housing, function(v) var(v, na.rm=TRUE)==0)])
 
 ``` r
 # exclude zero variance columns
-housing <- housing[,sapply(housing, function(v) var(v, na.rm=TRUE)!=0)]
+housing <- housing[, sapply(housing, function(v) var(v, na.rm = TRUE) != 0)]
 # dimensions of dataset
-cat(" Dimensions of dataset:", dim(housing),
-    "\n", "There are", sum(is.na(housing)), 
-    "'NA' values in the entire dataset.")
+
+cat(' Dimensions of dataset:', dim(housing),
+    '\n', 'There are', sum(is.na(housing)), 
+    'NA values in the entire dataset.')
 ```
 
     ##  Dimensions of dataset: 10617 90 
-    ##  There are 180 'NA' values in the entire dataset.
+    ##  There are 180 NA values in the entire dataset.
 
 ``` r
 # assign variable to count how many highly correlated
 # variables there exist based on 0.75 threshold
-highCorr_names <- findCorrelation(cor(housing, use="pairwise.complete.obs"),
+highCorr_names <- findCorrelation(cor(housing, use = 'pairwise.complete.obs'),
 cutoff = 0.75, names = TRUE)
 
 highCorr <- findCorrelation(cor(housing), cutoff = 0.75)
-cat(" There are", length(highCorr_names),
-    "highly correlated predictors."); highCorr_names
+cat(' There are', length(highCorr_names),
+    'highly correlated predictors.'); highCorr_names
 ```
 
     ##  There are 4 highly correlated predictors.
@@ -678,14 +796,11 @@ cat(" There are", length(highCorr_names),
 
 ``` r
 # remove highly correlated predictors
-housing$NW <- NULL
-housing$Ward6 <- NULL
-housing$Multi <- NULL
-housing$NUM_UNITS <- NULL
-# independent variables
-X_var <- colnames(housing); X_var <- list(colnames(housing))
-# remove response variable[-16] and index[-1] from list
-X_var <- X_var[[1]][-15]; X_var <- X_var[-1]; X_var
+housing$NW <- NULL; housing$Ward6 <- NULL
+housing$Multi <- NULL; housing$NUM_UNITS <- NULL
+X_var <- colnames(housing)                          # independent 
+X_var <- list(colnames(housing))                    # variables
+X_var <- X_var[[1]][-15]; X_var <- X_var[-1]; X_var # remove from list
 ```
 
     ##  [1] "HF_BATHRM"           "BATHROOMS"           "AC1IsYes"           
@@ -720,40 +835,40 @@ X_var <- X_var[[1]][-15]; X_var <- X_var[-1]; X_var
 ## Partitioning The Data
 
 ``` r
-# dataset is partitioned using a 70/30 train_test split as follows:
+# dataset is partitioned using a 70/30 train_test split as follows.
 set.seed(222) # make this example reproducible
 seventy_percent = 0.70*nrow(housing) # what is 70% of length of dataframe?
+
+# reassign to new var as sample of 70% of data
 ind <- sample(1:nrow(housing), seventy_percent)
-train_data <- as.h2o(housing[ind,]) # create training set as h2o data frame
-test_data <- as.h2o(housing[-ind,]) # create test set as h2o data frame
+train_data <- as.h2o(housing[ind, ]) # create training set as h2o data frame
+test_data <- as.h2o(housing[-ind, ]) # create test set as h2o data frame
 ```
 
 ``` r
-cat(" Training Dimensions:", dim(train_data),
-    "\n Testing Dimensions:", dim(test_data),
-    "\n Training Percentage:", round(nrow(train_data)/nrow(housing),2),
-    "\n Testing Percentage:", round(nrow(test_data)/nrow(housing), 2))
+cat(' Train Size:', dim(train_data), 
+    '\n Test Size:', dim(test_data), 
+    '\n Train Percentage:', round(nrow(train_data)/nrow(housing), 2),
+    '\n Test Percentage:', round(nrow(test_data)/nrow(housing), 2))
 ```
 
-    ##  Training Dimensions: 7431 86 
-    ##  Testing Dimensions: 3186 86 
-    ##  Training Percentage: 0.7 
-    ##  Testing Percentage: 0.3
+    ##  Train Size: 7431 86 
+    ##  Test Size: 3186 86 
+    ##  Train Percentage: 0.7 
+    ##  Test Percentage: 0.3
 
 ## Estimate The Deep Neural Network
 
 ``` r
-dl_DC_Properties1 <- h2o.deeplearning(y="PRICE", x=c(X_var), 
-                                      training_frame=train_data,
-                                      validation_frame=test_data, 
-                                      activation="Tanh", 
-                                      epochs=1000, hidden=c(4,4), 
-                                      standardize=TRUE, 
-                                      l1=0.0001, l2=0.001, 
-                                      adaptive_rate=TRUE,
-                                      variable_importances=TRUE,
-                                      nfolds=3, reproducible=TRUE, 
-                                      seed=222)
+dl_DC_Properties1 <- h2o.deeplearning(y = 'PRICE', x = c(X_var), 
+                                      training_frame = train_data,
+                                      validation_frame = test_data, 
+                                      activation = 'Tanh', epochs = 1000, 
+                                      hidden = c(4, 4), standardize = TRUE, 
+                                      l1 = 0.0001, l2 = 0.001, 
+                                      adaptive_rate = TRUE,
+                                      variable_importances = TRUE, nfolds = 3, 
+                                      reproducible = TRUE, seed = 222)
 ```
 
 ## Plot and Model Summary
@@ -770,7 +885,7 @@ hyperparameters are set to `TRUE`. Cross-validation is carried out over
 3 folds.
 
 ``` r
-plot(dl_DC_Properties1, metric='mae') # loss plotted throughout training
+plot(dl_DC_Properties1, metric = 'mae') # loss plotted throughout training
 ```
 
 <img src="figs/unnamed-chunk-26-1.png" style="display: block; margin: auto;" />
@@ -783,7 +898,7 @@ summary(dl_DC_Properties1) # Print model summary information
     ## ==============
     ## 
     ## H2ORegressionModel: deeplearning
-    ## Model Key:  DeepLearning_model_R_1669239665923_184 
+    ## Model Key:  DeepLearning_model_R_1673450336354_10 
     ## Status of Neuron Layers: predicting PRICE, regression, gaussian distribution, Quadratic loss, 361 weights/biases, 25.1 KB, 163,460 training samples, mini-batch size 1
     ##   layer units   type dropout       l1       l2 mean_rate rate_rms momentum
     ## 1     1    83  Input  0.00 %       NA       NA        NA       NA       NA
@@ -849,11 +964,11 @@ summary(dl_DC_Properties1) # Print model summary information
     ## 
     ## Scoring History: 
     ##             timestamp   duration training_speed  epochs iterations      samples
-    ## 1 2022-11-25 09:40:55  0.000 sec             NA 0.00000          0     0.000000
-    ## 2 2022-11-25 09:40:55  3.904 sec  82555 obs/sec 0.99987          1  7430.000000
-    ## 3 2022-11-25 09:40:55  4.071 sec  73930 obs/sec 1.99973          2 14860.000000
-    ## 4 2022-11-25 09:40:56  4.215 sec  73322 obs/sec 2.99960          3 22290.000000
-    ## 5 2022-11-25 09:40:56  4.351 sec  73930 obs/sec 3.99946          4 29720.000000
+    ## 1 2023-01-11 07:25:36  0.000 sec             NA 0.00000          0     0.000000
+    ## 2 2023-01-11 07:25:36  1.884 sec 172790 obs/sec 0.99987          1  7430.000000
+    ## 3 2023-01-11 07:25:36  1.942 sec 174823 obs/sec 1.99973          2 14860.000000
+    ## 4 2023-01-11 07:25:37  1.999 sec 178320 obs/sec 2.99960          3 22290.000000
+    ## 5 2023-01-11 07:25:37  2.060 sec 175857 obs/sec 3.99946          4 29720.000000
     ##   training_rmse training_deviance training_mae training_r2 validation_rmse
     ## 1            NA                NA           NA          NA              NA
     ## 2  111900.60866 12521746218.09240  85453.10174     0.74072    113626.92490
@@ -869,12 +984,12 @@ summary(dl_DC_Properties1) # Print model summary information
     ## 
     ## ---
     ##              timestamp   duration training_speed   epochs iterations
-    ## 18 2022-11-25 09:40:58  6.163 sec  76505 obs/sec 16.99771         17
-    ## 19 2022-11-25 09:40:58  6.312 sec  76118 obs/sec 17.99758         18
-    ## 20 2022-11-25 09:40:58  6.441 sec  76432 obs/sec 18.99744         19
-    ## 21 2022-11-25 09:40:58  6.567 sec  76915 obs/sec 19.99731         20
-    ## 22 2022-11-25 09:40:58  6.692 sec  77357 obs/sec 20.99717         21
-    ## 23 2022-11-25 09:40:58  6.817 sec  77727 obs/sec 21.99704         22
+    ## 18 2023-01-11 07:25:37  2.836 sec 167298 obs/sec 16.99771         17
+    ## 19 2023-01-11 07:25:37  2.883 sec 170152 obs/sec 17.99758         18
+    ## 20 2023-01-11 07:25:37  2.950 sec 168863 obs/sec 18.99744         19
+    ## 21 2023-01-11 07:25:38  3.013 sec 168289 obs/sec 19.99731         20
+    ## 22 2023-01-11 07:25:38  3.072 sec 168863 obs/sec 20.99717         21
+    ## 23 2023-01-11 07:25:38  3.130 sec 171701 obs/sec 21.99704         22
     ##          samples training_rmse training_deviance training_mae training_r2
     ## 18 126310.000000   86753.60745  7526188405.73467  64863.46409     0.84416
     ## 19 133740.000000   87265.91429  7615339797.56562  65934.43797     0.84232
@@ -915,7 +1030,8 @@ summary(dl_DC_Properties1) # Print model summary information
 The plot below shows the top ten variables in order of importance.
 
 ``` r
-h2o.varimp_plot(dl_DC_Properties1, 10) # plot the first 10 important variables
+# plot the first 10 important variables
+h2o.varimp_plot(dl_DC_Properties1, 10) 
 ```
 
 <img src="figs/unnamed-chunk-28-1.png" style="display: block; margin: auto;" />
@@ -923,8 +1039,8 @@ h2o.varimp_plot(dl_DC_Properties1, 10) # plot the first 10 important variables
 ``` r
 # Retrieve the variable importance
 varimp <- h2o.varimp(dl_DC_Properties1)
-top_10 <- varimp[1:10,] # for data exploration
-top_20 <- varimp[1:20,] # top 20 variables for subsequent modeling
+top_10 <- varimp[1:10, ] # for data exploration
+top_20 <- varimp[1:20, ] # top 20 variables for subsequent modeling
 top20_var <- top_20$variable
 print(top_10) # print the top 10 variables and their respective importance
 ```
@@ -954,27 +1070,25 @@ price vs. bathrooms both exhibit low correlations (*r*=0.16, and
 # plot CENSUS-TRACT VS. PRICE
 x5 = housing$ROOMS; y5 = housing$PRICE
 corrplot5 <- ggplot(housing, aes(x = x5, y = y5)) +
-                    ggtitle("Price vs. Rooms") +
+                    ggtitle('Price vs. Rooms') +
                     xlab('Rooms') + ylab('Price') +
-                    geom_point(pch=1) +
-                    geom_smooth(method="lm", se=FALSE) +
+                    geom_point(pch = 1) +
+                    geom_smooth(method = 'lm', se = FALSE) +
                     theme_classic() +
                     # Add correlation coefficient
-                    stat_cor(method = "pearson", label.x = 3, label.y = 30)
-
+                    stat_cor(method = 'pearson', label.x = 3, label.y = 30)
 # plot BATHROOMS VS. PRICE
 x6 = housing$BATHROOM; y6 = housing$PRICE
 corrplot6 <- ggplot(housing, aes(x = x6, y = y6)) +
-                    ggtitle("Price vs. Bathrooms") +
+                    ggtitle('Price vs. Bathrooms') +
                     xlab('Bathrooms') +
-                    ylab('Price') +
-                    geom_point(pch=1) +
-                    geom_smooth(method="lm", se=FALSE) +
+                    ylab('Price') + 
+                    geom_point(pch = 1) +
+                    geom_smooth(method = 'lm', se = FALSE) +
                     theme_classic() +
                     # Add correlation coefficient
-                    stat_cor(method = "pearson", label.x = 0.5, label.y = 30)
-
-plot_grid(corrplot5, corrplot6, labels="AUTO", ncol = 2, align = "v")
+                    stat_cor(method = 'pearson', label.x = 0.5, label.y = 30)
+plot_grid(corrplot5, corrplot6, labels='AUTO', ncol = 2, align = 'v')
 ```
 
     ## `geom_smooth()` using formula = 'y ~ x'
@@ -991,44 +1105,35 @@ confirm that no more of them exist.
 ``` r
 # create list from top 10 variables
 list <- c(top_10['variable']) 
-
 # subset top 10 variables into new df
-top_ten_housing <- housing[c(top_10[,'variable'])]
-
-# assign correlation function call to variable
-cor_top_ten_housing <- cor(top_ten_housing, 
-                           use="pairwise.complete.obs")
-
-# plot the correlation table (matrix)
-corrplot(cor_top_ten_housing, 
-         method="color",
-         col=colorRampPalette(c("#FC0320", 
-                                "white", 
-                                "#FF0000"))(200),
-                              addCoef.col = "black", 
-                              tl.col="black", 
-                              tl.srt=45, 
-                              type="lower", 
-                              number.cex = 0.8)
+top_ten_housing <- housing[c(top_10[, 'variable'])]
+# create a correlation matrix between all variables
+multicollinearity(top_ten_housing, tl.srt = 45, tl.offset = 1, number.cex = 0.7, 
+                  tl.cex = 0.8) # call the multicollinearity function
 ```
 
 <img src="figs/unnamed-chunk-31-1.png" style="display: block; margin: auto;" />
+
+    ##  There are 0 highly correlated predictors. 
+    ##  The following variables should be omitted: 
+    ## 
+
  
 
 ## Re-estimate The Deep Neural Network
 
 ``` r
-dl_DC_Properties2 <- h2o.deeplearning(y="PRICE", x=c(top20_var),
-                                      training_frame=train_data,
-                                      validation_frame=test_data,
-                                      activation="Tanh",
+dl_DC_Properties2 <- h2o.deeplearning(y = 'PRICE', x = c(top20_var),
+                                      training_frame = train_data,
+                                      validation_frame = test_data,
+                                      activation = 'Tanh',
                                       # hidden_layer, node
-                                      epochs=1000, hidden=c(2,2),
-                                      standardize=TRUE, l1=0.0001,
-                                      l2=0.01, adaptive_rate=TRUE,
-                                      variable_importances=TRUE,
-                                      nfolds=3, reproducible=TRUE,
-                                      seed=222)
+                                      epochs = 1000, hidden = c(2,2),
+                                      standardize = TRUE, l1 = 0.0001,
+                                      l2 = 0.01, adaptive_rate = TRUE,
+                                      variable_importances = TRUE,
+                                      nfolds = 3, reproducible = TRUE,
+                                      seed = 222)
 ```
 
 The model is re-trained with the top 20 features over the same
@@ -1037,7 +1142,8 @@ between the training and validation MAE scores over roughly the first
 twenty epochs. However, the gap progressively widens.
 
 ``` r
-plot(dl_DC_Properties2, metric='mae') # training and test loss plotted
+# training and test loss plotted
+plot(dl_DC_Properties2, metric = 'mae') 
 ```
 
 <img src="figs/unnamed-chunk-33-1.png" style="display: block; margin: auto;" />
@@ -1050,7 +1156,7 @@ summary(dl_DC_Properties2) # print out model summary information and statistics
     ## ==============
     ## 
     ## H2ORegressionModel: deeplearning
-    ## Model Key:  DeepLearning_model_R_1669239665923_185 
+    ## Model Key:  DeepLearning_model_R_1673450336354_11 
     ## Status of Neuron Layers: predicting PRICE, regression, gaussian distribution, Quadratic loss, 51 weights/biases, 8.6 KB, 334,350 training samples, mini-batch size 1
     ##   layer units   type dropout       l1       l2 mean_rate rate_rms momentum
     ## 1     1    20  Input  0.00 %       NA       NA        NA       NA       NA
@@ -1116,11 +1222,11 @@ summary(dl_DC_Properties2) # print out model summary information and statistics
     ## 
     ## Scoring History: 
     ##             timestamp   duration training_speed  epochs iterations      samples
-    ## 1 2022-11-25 09:41:08  0.000 sec             NA 0.00000          0     0.000000
-    ## 2 2022-11-25 09:41:08  2.858 sec 412777 obs/sec 0.99987          1  7430.000000
-    ## 3 2022-11-25 09:41:08  2.905 sec 345581 obs/sec 1.99973          2 14860.000000
-    ## 4 2022-11-25 09:41:08  2.946 sec 353809 obs/sec 2.99960          3 22290.000000
-    ## 5 2022-11-25 09:41:08  2.991 sec 330222 obs/sec 3.99946          4 29720.000000
+    ## 1 2023-01-11 07:25:44  0.000 sec             NA 0.00000          0     0.000000
+    ## 2 2023-01-11 07:25:44  1.550 sec 743000 obs/sec 0.99987          1  7430.000000
+    ## 3 2023-01-11 07:25:44  1.565 sec 594400 obs/sec 1.99973          2 14860.000000
+    ## 4 2023-01-11 07:25:44  1.594 sec 495333 obs/sec 2.99960          3 22290.000000
+    ## 5 2023-01-11 07:25:44  1.613 sec 540363 obs/sec 3.99946          4 29720.000000
     ##   training_rmse training_deviance training_mae training_r2 validation_rmse
     ## 1            NA                NA           NA          NA              NA
     ## 2  131101.74035 17187666323.07530 103539.52097     0.64411    129690.36639
@@ -1136,12 +1242,12 @@ summary(dl_DC_Properties2) # print out model summary information and statistics
     ## 
     ## ---
     ##              timestamp   duration training_speed   epochs iterations
-    ## 41 2022-11-25 09:41:10  4.422 sec 335440 obs/sec 39.99462         40
-    ## 42 2022-11-25 09:41:10  4.455 sec 336980 obs/sec 40.99448         41
-    ## 43 2022-11-25 09:41:10  4.489 sec 338093 obs/sec 41.99435         42
-    ## 44 2022-11-25 09:41:10  4.523 sec 339161 obs/sec 42.99421         43
-    ## 45 2022-11-25 09:41:10  4.560 sec 340187 obs/sec 43.99408         44
-    ## 46 2022-11-25 09:41:10  4.594 sec 341521 obs/sec 44.99394         45
+    ## 41 2023-01-11 07:25:45  2.319 sec 605295 obs/sec 39.99462         40
+    ## 42 2023-01-11 07:25:45  2.339 sec 606832 obs/sec 40.99448         41
+    ## 43 2023-01-11 07:25:45  2.359 sec 609492 obs/sec 41.99435         42
+    ## 44 2023-01-11 07:25:45  2.377 sec 612049 obs/sec 42.99421         43
+    ## 45 2023-01-11 07:25:45  2.384 sec 617996 obs/sec 43.99408         44
+    ## 46 2023-01-11 07:25:45  2.400 sec 613486 obs/sec 44.99394         45
     ##          samples training_rmse training_deviance training_mae training_r2
     ## 41 297200.000000  103526.05014 10717643057.66250  80019.56064     0.77808
     ## 42 304630.000000  102980.49293 10604981924.70570  79506.18557     0.78041
@@ -1187,7 +1293,7 @@ summary(dl_DC_Properties2) # print out model summary information and statistics
 
 ``` r
 # Predict outputs on the test set
-predictions<-h2o.predict(dl_DC_Properties2, test_data)
+predictions <- h2o.predict(dl_DC_Properties2, test_data)
 
 # print the predictions
 print(predictions)
@@ -1198,8 +1304,8 @@ print(predictions)
 ``` r
 # Create data set for analysis with LIME
 # Pick 5 indices from the training set
-for_lime <- sample(1:nrow(housing[ind,]), 5)
-data_for_lime <- housing[for_lime,]
+for_lime <- sample(1:nrow(housing[ind, ]), 5)
+data_for_lime <- housing[for_lime, ]
 ```
 
 ## Fit Deep Neural Network
@@ -1208,21 +1314,21 @@ The same model is used, only this time without cross-validation. Results
 are the same.
 
 ``` r
-dl_DC_Properties3 <- h2o.deeplearning(y="PRICE", x=c(top20_var),
-                                      training_frame=train_data,
-                                      validation_frame=test_data,
-                                      activation="Tanh",
+dl_DC_Properties3 <- h2o.deeplearning(y = 'PRICE', x = c(top20_var),
+                                      training_frame = train_data,
+                                      validation_frame = test_data,
+                                      activation = 'Tanh',
                                       # hidden_layer, node
-                                      epochs=1000, hidden=c(2,2),
-                                      standardize=TRUE, l1=0.0001,
-                                      l2=0.015, adaptive_rate=TRUE,
-                                      variable_importances=TRUE,
+                                      epochs = 1000, hidden = c(2,2),
+                                      standardize = TRUE, l1 = 0.0001,
+                                      l2 = 0.015, adaptive_rate = TRUE,
+                                      variable_importances = TRUE,
                                       reproducible = TRUE,
-                                      seed=222)
+                                      seed = 222)
 ```
 
 ``` r
-plot(dl_DC_Properties3, metric='mae') # training and test loss plotted
+plot(dl_DC_Properties3, metric = 'mae') # training and test loss plotted
 ```
 
 <img src="figs/unnamed-chunk-38-1.png" style="display: block; margin: auto;" />
@@ -1235,7 +1341,7 @@ summary(dl_DC_Properties3) # print out model summary information and statistics
     ## ==============
     ## 
     ## H2ORegressionModel: deeplearning
-    ## Model Key:  DeepLearning_model_R_1669239665923_186 
+    ## Model Key:  DeepLearning_model_R_1673450336354_12 
     ## Status of Neuron Layers: predicting PRICE, regression, gaussian distribution, Quadratic loss, 51 weights/biases, 8.6 KB, 319,490 training samples, mini-batch size 1
     ##   layer units   type dropout       l1       l2 mean_rate rate_rms momentum
     ## 1     1    20  Input  0.00 %       NA       NA        NA       NA       NA
@@ -1274,11 +1380,11 @@ summary(dl_DC_Properties3) # print out model summary information and statistics
     ## 
     ## Scoring History: 
     ##             timestamp   duration training_speed  epochs iterations      samples
-    ## 1 2022-11-25 09:41:13  0.000 sec             NA 0.00000          0     0.000000
-    ## 2 2022-11-25 09:41:13  0.038 sec 391052 obs/sec 0.99987          1  7430.000000
-    ## 3 2022-11-25 09:41:13  0.072 sec 391052 obs/sec 1.99973          2 14860.000000
-    ## 4 2022-11-25 09:41:13  0.106 sec 384310 obs/sec 2.99960          3 22290.000000
-    ## 5 2022-11-25 09:41:13  0.141 sec 381025 obs/sec 3.99946          4 29720.000000
+    ## 1 2023-01-11 07:25:48  0.000 sec             NA 0.00000          0     0.000000
+    ## 2 2023-01-11 07:25:48  0.012 sec 825555 obs/sec 0.99987          1  7430.000000
+    ## 3 2023-01-11 07:25:48  0.041 sec 479354 obs/sec 1.99973          2 14860.000000
+    ## 4 2023-01-11 07:25:48  0.059 sec 557250 obs/sec 2.99960          3 22290.000000
+    ## 5 2023-01-11 07:25:48  0.075 sec 606530 obs/sec 3.99946          4 29720.000000
     ##   training_rmse training_deviance training_mae training_r2 validation_rmse
     ## 1            NA                NA           NA          NA              NA
     ## 2  130438.84559 17014292437.87010 103013.26518     0.64770    129212.06931
@@ -1294,12 +1400,12 @@ summary(dl_DC_Properties3) # print out model summary information and statistics
     ## 
     ## ---
     ##              timestamp   duration training_speed   epochs iterations
-    ## 40 2022-11-25 09:41:15  1.542 sec 338121 obs/sec 38.99475         39
-    ## 41 2022-11-25 09:41:15  1.576 sec 339657 obs/sec 39.99462         40
-    ## 42 2022-11-25 09:41:15  1.610 sec 340368 obs/sec 40.99448         41
-    ## 43 2022-11-25 09:41:15  1.646 sec 340676 obs/sec 41.99435         42
-    ## 44 2022-11-25 09:41:15  1.680 sec 341700 obs/sec 42.99421         43
-    ## 45 2022-11-25 09:41:15  1.700 sec 339882 obs/sec 42.99421         43
+    ## 40 2023-01-11 07:25:49  0.695 sec 645367 obs/sec 38.99475         39
+    ## 41 2023-01-11 07:25:49  0.712 sec 661915 obs/sec 39.99462         40
+    ## 42 2023-01-11 07:25:49  0.727 sec 678463 obs/sec 40.99448         41
+    ## 43 2023-01-11 07:25:49  0.745 sec 695011 obs/sec 41.99435         42
+    ## 44 2023-01-11 07:25:49  0.761 sec 697576 obs/sec 42.99421         43
+    ## 45 2023-01-11 07:25:49  0.771 sec 694543 obs/sec 42.99421         43
     ##          samples training_rmse training_deviance training_mae training_r2
     ## 40 289770.000000  105220.12055 11071273769.51410  81061.99058     0.77076
     ## 41 297200.000000  104389.18853 10897102681.57010  80718.34259     0.77436
@@ -1354,124 +1460,213 @@ explanation <- explain(data_for_lime, explainer_price, n_labels = 2,
 ```
 
 ``` r
-print(explanation) # print explanation output
+# print explanation output
+pandoc.table(explanation[c(2, 3, 4, 5, 6, 11)], style = 'simple', 
+             split.table = Inf) 
 ```
 
-    ## # A tibble: 20 × 11
-    ##    model_type case  model_r2 model_int…¹ model…² feature featu…³ featu…⁴ featu…⁵
-    ##    <chr>      <chr>    <dbl>       <dbl>   <dbl> <chr>     <dbl>   <dbl> <chr>  
-    ##  1 regression 5009     0.684     517791. 513531. Ward        4    2.11e5 Ward <…
-    ##  2 regression 5009     0.684     517791. 513531. BATHRO…     2.5 -1.13e5 BATHRO…
-    ##  3 regression 5009     0.684     517791. 513531. FIREPL…     0   -7.83e4 FIREPL…
-    ##  4 regression 5009     0.684     517791. 513531. LANDAR…  1658   -2.39e4 LANDAR…
-    ##  5 regression 480      0.710     729583. 304552. Ward        8   -2.09e5 5 < Wa…
-    ##  6 regression 480      0.710     729583. 304552. BATHRO…     1   -1.12e5 BATHRO…
-    ##  7 regression 480      0.710     729583. 304552. FIREPL…     0   -8.24e4 FIREPL…
-    ##  8 regression 480      0.710     729583. 304552. LANDAR…  1541   -2.11e4 LANDAR…
-    ##  9 regression 7067     0.647     430790. 640012. Ward        5    2.07e5 Ward <…
-    ## 10 regression 7067     0.647     430790. 640012. BATHRO…     3.5  9.97e4 3.0 < …
-    ## 11 regression 7067     0.647     430790. 640012. FIREPL…     0   -8.21e4 FIREPL…
-    ## 12 regression 7067     0.647     430790. 640012. LANDAR…  1680   -1.52e4 1658 <…
-    ## 13 regression 5089     0.664     418250. 692433. Ward        5    2.06e5 Ward <…
-    ## 14 regression 5089     0.664     418250. 692433. BATHRO…     3.5  1.00e5 3.0 < …
-    ## 15 regression 5089     0.664     418250. 692433. FIREPL…     0   -7.84e4 FIREPL…
-    ## 16 regression 5089     0.664     418250. 692433. LANDAR…  6200    4.66e4 2926 <…
-    ## 17 regression 4938     0.433     401948. 824680. Ward        4    2.11e5 Ward <…
-    ## 18 regression 4938     0.433     401948. 824680. EYB      1947   -2.16e4 EYB <=…
-    ## 19 regression 4938     0.433     401948. 824680. BATHRO…     3    1.29e4 2.5 < …
-    ## 20 regression 4938     0.433     401948. 824680. YearSo…  2016    2.21e5 2016 <…
-    ## # … with 2 more variables: data <list>, prediction <dbl>, and abbreviated
-    ## #   variable names ¹​model_intercept, ²​model_prediction, ³​feature_value,
-    ## #   ⁴​feature_weight, ⁵​feature_desc
+    ## 
+    ## 
+    ##  case   model_r2   model_intercept   model_prediction    feature     prediction 
+    ## ------ ---------- ----------------- ------------------ ------------ ------------
+    ##  5009    0.6843        517791             513531           Ward        617066   
+    ##  5009    0.6843        517791             513531        BATHROOMS      617066   
+    ##  5009    0.6843        517791             513531        FIREPLACES     617066   
+    ##  5009    0.6843        517791             513531         LANDAREA      617066   
+    ##  480     0.7096        729583             304552           Ward        253949   
+    ##  480     0.7096        729583             304552        BATHROOMS      253949   
+    ##  480     0.7096        729583             304552        FIREPLACES     253949   
+    ##  480     0.7096        729583             304552         LANDAREA      253949   
+    ##  7067    0.6472        430790             640012           Ward        628222   
+    ##  7067    0.6472        430790             640012        BATHROOMS      628222   
+    ##  7067    0.6472        430790             640012        FIREPLACES     628222   
+    ##  7067    0.6472        430790             640012         LANDAREA      628222   
+    ##  5089    0.664         418250             692433           Ward        568733   
+    ##  5089    0.664         418250             692433        BATHROOMS      568733   
+    ##  5089    0.664         418250             692433        FIREPLACES     568733   
+    ##  5089    0.664         418250             692433         LANDAREA      568733   
+    ##  4938    0.4334        401948             824680           Ward        824680   
+    ##  4938    0.4334        401948             824680           EYB         824680   
+    ##  4938    0.4334        401948             824680        BATHROOMS      824680   
+    ##  4938    0.4334        401948             824680         YearSold      824680
 
 ``` r
-print(data_for_lime)
+pandoc.table(data_for_lime, style = 'simple') # table the data for lime analysis
 ```
 
-    ##         X.1 HF_BATHRM BATHROOMS AC1IsYes ROOMS BEDRM  EYB STORIES YearSold
-    ## 5009  53918         1       2.5        1     6     4 1964       2     2016
-    ## 480  106567         0       1.0        1     6     2 1967       2     2016
-    ## 7067  64791         1       3.5        1     8     4 1967       2     2015
-    ## 5089  69466         1       3.5        1     6     3 1973       2     2016
-    ## 4938  65505         0       3.0        1     6     3 1947       2     2016
-    ##      Month Winter Spring Summer  PRICE GrossBuildingArea RowInside RowEnd
-    ## 5009     9      0      0      0 580000              1840         1      0
-    ## 480     11      0      0      0 249900               832         1      0
-    ## 7067     4      0      1      0 720000              1974         1      0
-    ## 5089     1      1      0      0 585000              1278         0      0
-    ## 4938    11      0      0      0 575000              1403         0      1
-    ##      SemiDetached TownEnd TownInside GradeLowerBetter KITCHENS FIREPLACES
-    ## 5009            0       0          0                3        1          0
-    ## 480             0       0          0                2        1          0
-    ## 7067            0       0          0                2        1          0
-    ## 5089            1       0          0                3        1          0
-    ## 4938            0       0          0                2        1          4
-    ##      USECODE LANDAREA CongressHeights Deanwood RandleHeights FortDupontPark
-    ## 5009      11     1658               0        0             0              0
-    ## 480       11     1541               1        0             0              0
-    ## 7067      11     1680               0        0             0              0
-    ## 5089      13     6200               0        0             0              0
-    ## 4938      11     2926               0        0             0              0
-    ##      MichiganPark MarshallHeights ColumbiaHeights Brookland Trinidad Hillcrest
-    ## 5009            0               0               0         0        0         0
-    ## 480             0               0               0         0        0         0
-    ## 7067            0               0               0         1        0         0
-    ## 5089            0               0               0         0        0         0
-    ## 4938            0               0               0         0        0         0
-    ##      Burleith Anacostia LilyPonds BarryFarms Petworth Woodridge OldCity1
-    ## 5009        0         0         0          0        1         0        0
-    ## 480         0         0         0          0        0         0        0
-    ## 7067        0         0         0          0        0         0        0
-    ## 5089        0         0         0          0        0         0        0
-    ## 4938        0         0         0          0        1         0        0
-    ##      Brentwood Eckington MtPleasant FortLincoln RiggsPark StreetHeights16th
-    ## 5009         0         0          0           0         0                 0
-    ## 480          0         0          0           0         0                 0
-    ## 7067         0         0          0           0         0                 0
-    ## 5089         0         0          0           0         1                 0
-    ## 4938         0         0          0           0         0                 0
-    ##      OldCity2 TakomaPark Brightwood Chillum CapitolHill LedroitPark ChevyChase
-    ## 5009        0          0          0       0           0           0          0
-    ## 480         0          0          0       0           0           0          0
-    ## 7067        0          0          0       0           0           0          0
-    ## 5089        0          0          0       0           0           0          0
-    ## 4938        0          0          0       0           0           0          0
-    ##      ShepherdHeights Georgetown AmericanUniversity FoggyBottom Kent
-    ## 5009               0          0                  0           0    0
-    ## 480                0          0                  0           0    0
-    ## 7067               0          0                  0           0    0
-    ## 5089               0          0                  0           0    0
-    ## 4938               0          0                  0           0    0
-    ##      WesleyHeights Palisades GloverPark Crestwood ClevelandPark ColonialVillage
-    ## 5009             0         0          0         0             0               0
-    ## 480              0         0          0         0             0               0
-    ## 7067             0         0          0         0             0               0
-    ## 5089             0         0          0         0             0               0
-    ## 4938             0         0          0         0             0               0
-    ##      SouthwestWaterfront Foxhall NorthClevelandPark Hawthorne SpringValley
-    ## 5009                   0       0                  0         0            0
-    ## 480                    0       0                  0         0            0
-    ## 7067                   0       0                  0         0            0
-    ## 5089                   0       0                  0         0            0
-    ## 4938                   0       0                  0         0            0
-    ##      Wakefield Centraltri1 Berkley Garfield ForestHills ObservatoryCircle
-    ## 5009         0           0       0        0           0                 0
-    ## 480          0           0       0        0           0                 0
-    ## 7067         0           0       0        0           0                 0
-    ## 5089         0           0       0        0           0                 0
-    ## 4938         0           0       0        0           0                 0
-    ##      CENSUS_TRACT Ward Ward2 Ward3 Ward4 Ward5 Ward7 NE SW
-    ## 5009         2201    4     0     0     1     0     0  0  0
-    ## 480          9807    8     0     0     0     0     0  0  1
-    ## 7067         9203    5     0     0     0     1     0  1  0
-    ## 5089         9508    5     0     0     0     1     0  1  0
-    ## 4938         2102    4     0     0     1     0     0  0  0
+|          |  X.1   | HF_BATHRM | BATHROOMS | AC1IsYes | ROOMS | BEDRM | EYB  |
+|:--------:|:------:|:---------:|:---------:|:--------:|:-----:|:-----:|:----:|
+| **5009** | 53918  |     1     |    2.5    |    1     |   6   |   4   | 1964 |
+| **480**  | 106567 |     0     |     1     |    1     |   6   |   2   | 1967 |
+| **7067** | 64791  |     1     |    3.5    |    1     |   8   |   4   | 1967 |
+| **5089** | 69466  |     1     |    3.5    |    1     |   6   |   3   | 1973 |
+| **4938** | 65505  |     0     |     3     |    1     |   6   |   3   | 1947 |
+
+Table continues below
+
+|          | STORIES | YearSold | Month | Winter | Spring | Summer | PRICE  |
+|:--------:|:-------:|:--------:|:-----:|:------:|:------:|:------:|:------:|
+| **5009** |    2    |   2016   |   9   |   0    |   0    |   0    | 580000 |
+| **480**  |    2    |   2016   |  11   |   0    |   0    |   0    | 249900 |
+| **7067** |    2    |   2015   |   4   |   0    |   1    |   0    | 720000 |
+| **5089** |    2    |   2016   |   1   |   1    |   0    |   0    | 585000 |
+| **4938** |    2    |   2016   |  11   |   0    |   0    |   0    | 575000 |
+
+Table continues below
+
+|          | GrossBuildingArea | RowInside | RowEnd | SemiDetached | TownEnd |
+|:--------:|:-----------------:|:---------:|:------:|:------------:|:-------:|
+| **5009** |       1840        |     1     |   0    |      0       |    0    |
+| **480**  |        832        |     1     |   0    |      0       |    0    |
+| **7067** |       1974        |     1     |   0    |      0       |    0    |
+| **5089** |       1278        |     0     |   0    |      1       |    0    |
+| **4938** |       1403        |     0     |   1    |      0       |    0    |
+
+Table continues below
+
+|          | TownInside | GradeLowerBetter | KITCHENS | FIREPLACES | USECODE |
+|:--------:|:----------:|:----------------:|:--------:|:----------:|:-------:|
+| **5009** |     0      |        3         |    1     |     0      |   11    |
+| **480**  |     0      |        2         |    1     |     0      |   11    |
+| **7067** |     0      |        2         |    1     |     0      |   11    |
+| **5089** |     0      |        3         |    1     |     0      |   13    |
+| **4938** |     0      |        2         |    1     |     4      |   11    |
+
+Table continues below
+
+|          | LANDAREA | CongressHeights | Deanwood | RandleHeights |
+|:--------:|:--------:|:---------------:|:--------:|:-------------:|
+| **5009** |   1658   |        0        |    0     |       0       |
+| **480**  |   1541   |        1        |    0     |       0       |
+| **7067** |   1680   |        0        |    0     |       0       |
+| **5089** |   6200   |        0        |    0     |       0       |
+| **4938** |   2926   |        0        |    0     |       0       |
+
+Table continues below
+
+|          | FortDupontPark | MichiganPark | MarshallHeights | ColumbiaHeights |
+|:--------:|:--------------:|:------------:|:---------------:|:---------------:|
+| **5009** |       0        |      0       |        0        |        0        |
+| **480**  |       0        |      0       |        0        |        0        |
+| **7067** |       0        |      0       |        0        |        0        |
+| **5089** |       0        |      0       |        0        |        0        |
+| **4938** |       0        |      0       |        0        |        0        |
+
+Table continues below
+
+|          | Brookland | Trinidad | Hillcrest | Burleith | Anacostia | LilyPonds |
+|:--------:|:---------:|:--------:|:---------:|:--------:|:---------:|:---------:|
+| **5009** |     0     |    0     |     0     |    0     |     0     |     0     |
+| **480**  |     0     |    0     |     0     |    0     |     0     |     0     |
+| **7067** |     1     |    0     |     0     |    0     |     0     |     0     |
+| **5089** |     0     |    0     |     0     |    0     |     0     |     0     |
+| **4938** |     0     |    0     |     0     |    0     |     0     |     0     |
+
+Table continues below
+
+|          | BarryFarms | Petworth | Woodridge | OldCity1 | Brentwood |
+|:--------:|:----------:|:--------:|:---------:|:--------:|:---------:|
+| **5009** |     0      |    1     |     0     |    0     |     0     |
+| **480**  |     0      |    0     |     0     |    0     |     0     |
+| **7067** |     0      |    0     |     0     |    0     |     0     |
+| **5089** |     0      |    0     |     0     |    0     |     0     |
+| **4938** |     0      |    1     |     0     |    0     |     0     |
+
+Table continues below
+
+|          | Eckington | MtPleasant | FortLincoln | RiggsPark |
+|:--------:|:---------:|:----------:|:-----------:|:---------:|
+| **5009** |     0     |     0      |      0      |     0     |
+| **480**  |     0     |     0      |      0      |     0     |
+| **7067** |     0     |     0      |      0      |     0     |
+| **5089** |     0     |     0      |      0      |     1     |
+| **4938** |     0     |     0      |      0      |     0     |
+
+Table continues below
+
+|          | StreetHeights16th | OldCity2 | TakomaPark | Brightwood | Chillum |
+|:--------:|:-----------------:|:--------:|:----------:|:----------:|:-------:|
+| **5009** |         0         |    0     |     0      |     0      |    0    |
+| **480**  |         0         |    0     |     0      |     0      |    0    |
+| **7067** |         0         |    0     |     0      |     0      |    0    |
+| **5089** |         0         |    0     |     0      |     0      |    0    |
+| **4938** |         0         |    0     |     0      |     0      |    0    |
+
+Table continues below
+
+|          | CapitolHill | LedroitPark | ChevyChase | ShepherdHeights |
+|:--------:|:-----------:|:-----------:|:----------:|:---------------:|
+| **5009** |      0      |      0      |     0      |        0        |
+| **480**  |      0      |      0      |     0      |        0        |
+| **7067** |      0      |      0      |     0      |        0        |
+| **5089** |      0      |      0      |     0      |        0        |
+| **4938** |      0      |      0      |     0      |        0        |
+
+Table continues below
+
+|          | Georgetown | AmericanUniversity | FoggyBottom | Kent |
+|:--------:|:----------:|:------------------:|:-----------:|:----:|
+| **5009** |     0      |         0          |      0      |  0   |
+| **480**  |     0      |         0          |      0      |  0   |
+| **7067** |     0      |         0          |      0      |  0   |
+| **5089** |     0      |         0          |      0      |  0   |
+| **4938** |     0      |         0          |      0      |  0   |
+
+Table continues below
+
+|          | WesleyHeights | Palisades | GloverPark | Crestwood | ClevelandPark |
+|:--------:|:-------------:|:---------:|:----------:|:---------:|:-------------:|
+| **5009** |       0       |     0     |     0      |     0     |       0       |
+| **480**  |       0       |     0     |     0      |     0     |       0       |
+| **7067** |       0       |     0     |     0      |     0     |       0       |
+| **5089** |       0       |     0     |     0      |     0     |       0       |
+| **4938** |       0       |     0     |     0      |     0     |       0       |
+
+Table continues below
+
+|          | ColonialVillage | SouthwestWaterfront | Foxhall |
+|:--------:|:---------------:|:-------------------:|:-------:|
+| **5009** |        0        |          0          |    0    |
+| **480**  |        0        |          0          |    0    |
+| **7067** |        0        |          0          |    0    |
+| **5089** |        0        |          0          |    0    |
+| **4938** |        0        |          0          |    0    |
+
+Table continues below
+
+|          | NorthClevelandPark | Hawthorne | SpringValley | Wakefield |
+|:--------:|:------------------:|:---------:|:------------:|:---------:|
+| **5009** |         0          |     0     |      0       |     0     |
+| **480**  |         0          |     0     |      0       |     0     |
+| **7067** |         0          |     0     |      0       |     0     |
+| **5089** |         0          |     0     |      0       |     0     |
+| **4938** |         0          |     0     |      0       |     0     |
+
+Table continues below
+
+|          | Centraltri1 | Berkley | Garfield | ForestHills | ObservatoryCircle |
+|:--------:|:-----------:|:-------:|:--------:|:-----------:|:-----------------:|
+| **5009** |      0      |    0    |    0     |      0      |         0         |
+| **480**  |      0      |    0    |    0     |      0      |         0         |
+| **7067** |      0      |    0    |    0     |      0      |         0         |
+| **5089** |      0      |    0    |    0     |      0      |         0         |
+| **4938** |      0      |    0    |    0     |      0      |         0         |
+
+Table continues below
+
+|          | CENSUS_TRACT | Ward | Ward2 | Ward3 | Ward4 | Ward5 | Ward7 | NE  | SW  |
+|:--------:|:------------:|:----:|:-----:|:-----:|:-----:|:-----:|:-----:|:---:|:---:|
+| **5009** |     2201     |  4   |   0   |   0   |   1   |   0   |   0   |  0  |  0  |
+| **480**  |     9807     |  8   |   0   |   0   |   0   |   0   |   0   |  0  |  1  |
+| **7067** |     9203     |  5   |   0   |   0   |   0   |   1   |   0   |  1  |  0  |
+| **5089** |     9508     |  5   |   0   |   0   |   0   |   1   |   0   |  1  |  0  |
+| **4938** |     2102     |  4   |   0   |   0   |   1   |   0   |   0   |  0  |  0  |
 
 Five random features explain the model’s fit with a mean of 63%.
 
 ``` r
 # Visualize the lime output
-plot_features(explanation, ncol=1)
+plot_features(explanation, ncol = 1) 
 ```
 
 <img src="figs/unnamed-chunk-42-1.png" style="display: block; margin: auto;" />
@@ -1497,10 +1692,11 @@ predicted well.
 price_prediction <- as.data.frame(explanation$prediction)
 price_prediction <- as.numeric(unlist(price_prediction))
 cat('\n', 'Mean Price Prediction:', mean(price_prediction),
-    '\n', 'Mean Home Price:', mean(housing$PRICE, na.rm=TRUE),
-    '\n', 'Difference:', mean(housing$PRICE, na.rm=TRUE)-mean(price_prediction),
-    '\n', '% Difference:', 1-mean(price_prediction)/mean(housing$PRICE, 
-                                                         na.rm=TRUE))
+    '\n', 'Mean Home Price:', mean(housing$PRICE, na.rm = TRUE),
+    '\n', 'Difference:', mean(housing$PRICE, na.rm = TRUE) 
+                       - mean(price_prediction),
+    '\n', '% Difference:', 1 - mean(price_prediction)/mean(housing$PRICE, 
+                                                         na.rm = TRUE))
 ```
 
     ## 
@@ -1510,8 +1706,8 @@ cat('\n', 'Mean Price Prediction:', mean(price_prediction),
     ##  % Difference: 0.03265278
 
 ``` r
-plot(explanation$model_r2, main='Predictions: R-Squared', xlab='Index',
-     ylab='R-Squared') # plot the model explanation
+plot(explanation$model_r2, main = 'Predictions: R-Squared', xlab = 'Index',
+     ylab = 'R-Squared') # plot the model explanation
 ```
 
 <img src="figs/unnamed-chunk-45-1.png" style="display: block; margin: auto;" />
