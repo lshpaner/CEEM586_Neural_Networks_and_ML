@@ -8,7 +8,7 @@ output: github_document
   
 ```{r setup, include=FALSE}
 library(knitr)
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_knit$set(echo = TRUE, root.dir = 'C:/Users/lshpaner/Documents/GitHub Repositories/CEEM586_Neural_Networks_and_ML')
 ```
 
 ```{r global.options, include = FALSE}
@@ -243,6 +243,7 @@ nn_test <- neuralnet(f_test, data = testdata, hidden = c(5, 3),
                      linear.output = T) 
 plot(nn_train, rep = 'best') # plot the neural network - training data
 ```
+
 ### Predict on Training Data and Test Data
 
 ```{r}
