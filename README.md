@@ -1,4 +1,4 @@
-# Neural Networks and Machine Learning
+# Neural Networks and Machine Learning in R
 ## Instructions:  
 In this project, you will:  
 
@@ -11,7 +11,7 @@ In this project, you will:
 * Use the package Lime in R to recognize which variables are driving the recommendations your neural
 network is making  
 
-## Part One - Projecting Data for Neural Networks in R
+## Part One - Projecting Data for Neural Networks
 
 In this part of the project, you will project data for neural networks using the file **ElectionData.csv**, which contains the fraction of votes by county earned by President Trump and Secretary Clinton in the 2016 US Presidential election, sorted by county FIPS code (FIPS stands for **F**ederal **I**nformation **P**rocessing **S**ystem, and is a geographic identifier). The data file also includes several variables that may be useful to predict these fractions. Use the data to develop a neural network model for either individual.
 
