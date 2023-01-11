@@ -2,3 +2,12 @@
 .Rhistory
 .RData
 .Ruserdata
+
+# ignore .Rmd file(s)
+*.Rmd
+
+# ignore .Rproj file
+*.Rproj
+
+# ignore cache folder(s)
+/code/CEEM586_Project_cache
